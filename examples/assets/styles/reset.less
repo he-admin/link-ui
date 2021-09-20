@@ -1,0 +1,27 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: #515a6e;
+}
+
+ul, li {
+  list-style: none;
+}
+
+/*去除浮动*/
+.link-global-clear {
+  zoom: 1;
+}
+
+.link-global-clear:after {
+  content: "";
+  clear: both;
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
