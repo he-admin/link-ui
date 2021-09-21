@@ -1,0 +1,42 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+*[class^=lku] { // css3样式选择器，表示选择class中有包含lku的元素，如claas='lku-menu'
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; // css3 盒模型
+  text-align: left;
+  font-size: 14px;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+  color: #515a6e;
+}
+
+input[class^=lku] {
+  outline: none;
+}
+
+ul[class^=lku], li[class^=lku] {
+  list-style: none;
+}
+
+// 去除浮动
+.lku-global-clear {
+  zoom: 1
+}
+
+.lku-global-clear:after {
+  content: '';
+  clear: both;
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+
+// 一行显示，超出隐藏
+.lku-global-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

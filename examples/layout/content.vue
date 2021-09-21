@@ -1,6 +1,8 @@
 <template>
   <doc-header></doc-header>
-  <div></div>
+  <div>
+    <lku-menu></lku-menu>
+  </div>
 </template>
 
 <script>
