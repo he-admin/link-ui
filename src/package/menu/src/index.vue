@@ -1,5 +1,5 @@
 <template>
-  <div class="link-menu">
+  <div class="lku-menu">
     这是菜单组件
   </div>
 </template>
@@ -9,7 +9,3 @@ export default {
   name: "LkuMenu"
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -1,14 +1,10 @@
 const path = require('path');
 
 module.exports = {
-  css: {
-    loaderOptions: {
-      sass: {
-        // 全局引入变量和 mixin,这样在组件中直接使用对应的样式变量，不需要引入文件
-        prependData: `
-          @import "@/assets/scss/variable.scss";
-        `
-      }
+  pluginOptions: {
+    "style-resources-loader": {
+      preProcessor: "less",
+      patterns: ["./src/styles/colors/index.less", "./src/styles/sizes/index.less"] //引入全局less文件
     }
   },
   publicPath: process.env.NODE_ENV === 'production'
