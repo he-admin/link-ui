@@ -15,7 +15,7 @@ const transition = (props) => {
 }
 
 export default {
-  name: 'MkuCollapseTransition',
+  name: 'LkuCollapseTransition',
   functional: true,
   props: {
     duration: {

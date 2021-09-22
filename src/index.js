@@ -1,7 +1,9 @@
 import './styles/components/menu.less';
-import LinkMenu from './package/menu/index';
+import LkuMenu from './package/menu';
+import LkuMenuGroup from './package/menu-group';
+import LkuMenuItem from './package/menu-item';
 
-const components = [LinkMenu];
+const components = [LkuMenu, LkuMenuGroup, LkuMenuItem];
 
 const install = (Vue) => {
   components.forEach((component) => {
@@ -16,5 +18,7 @@ const install = (Vue) => {
 export default {
   version: '0.1.0',
   install,
-  LinkMenu
+  LkuMenu,
+  LkuMenuGroup,
+  LkuMenuItem
 }

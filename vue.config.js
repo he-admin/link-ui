@@ -31,6 +31,66 @@ module.exports = {
       .add('/src')
       .end()
       .use('babel')
-      .loader('babel-loader')
+      .loader('babel-loader');
+    // config.module.rule('md')
+    //   .test(/\.md$/)
+    //   .use('vue-loader-v16')
+    //   .loader('vue-loader-v16')
+    //   .end()
+    //   .use('@vant/markdown-loader')
+    //   .loader('@vant/markdown-loader')
+    //   .end()
+    //
+    // config.module
+    //   .rule('eslint')
+    //   .test(/\.(vue|(j|t)sx?)$/)
+    //   .pre()
+    //   .enforce('pre')
+    //   .exclude
+    //   // 避免 md 语法报错
+    //   .add(/\.md/)
+
+
+    // config.module
+    //   .rule('md')
+    //   .test(/\.md/)
+    //   .use('vue-loader-v16')
+    //   .loader('vue-loader-v16')
+    //   .options({
+    //     compiler: require('@vue/compiler-sfc'),
+    //   })
+    //   .end()
+    //   .use(path.resolve(__dirname,'./build/md-loader/index.js'))
+    //   .loader(path.resolve(__dirname,'./build/md-loader/index.js'))
+
+    // config.module
+    //   .rule('md')
+    //   .test(/\.md$/)
+    //   .use('vue-loader-v16')
+    //   .loader('vue-loader-v16')
+    //   .tap(() => ({
+    //     compilerOptions: {
+    //       preserveWhitespace: false,
+    //     },
+    //   }))
+    //   .end()
+    //   .use('md-loader')
+    //   .loader(path.resolve(__dirname, './build/md-loader/index.js'))
+    //   .end();
+
+    config.module
+      .rule('md')
+      .test(/\.md$/)
+      .use('vue-loader-v16')
+      .loader('vue-loader-v16')
+      .tap(() => ({
+        compilerOptions: {
+          preserveWhitespace: false,
+        },
+      }))
+      .end()
+      .use('md-loader')
+      .loader(path.resolve(__dirname, './build/md-loader/index.js'))
+      .end();
   }
 }

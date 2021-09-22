@@ -1,4 +1,44 @@
 .lku-menu {
-  font-size: @medium-font-size;
-  color: #000000;
+  &.lku-menu--vertical {
+    &:not(.lku-menu--dark) {
+      border-right: 1px solid #dcdee2;
+    }
+  }
+
+  // menu group
+  .lku-menu-group {
+    .lku-menu-group__title {
+      padding: 4px 20px;
+      color: @secondary-text-color;
+    }
+  }
+
+  // menu item
+  .lku-menu-item {
+    position: absolute;
+    width: 100%;
+    padding: 10px 20px;
+    transition: all .3s;
+    cursor: pointer;
+    &:after{
+      content: '';
+      position: absolute;
+      right: -1px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: transparent;
+    }
+    &:hover{
+      color: @primary-color;
+    }
+    &.lku-menu-item--active {
+      color: @primary-color;
+      background: #f0fafe;
+      &:after {
+        background: @primary-color;
+      }
+    }
+  }
 }
+

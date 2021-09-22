@@ -7,8 +7,9 @@
 <script>
 import {computed} from 'vue'
 
+const PREFIX_MENU_ITEM = 'lku-menu-item';
 export default {
-  name: "MkuMenuItem",
+  name: "LkuMenuItem",
   props: {
     // 菜单名字
     name: {
@@ -22,8 +23,14 @@ export default {
     },
     // 菜单是否禁用
   },
-  setup(props, {emit}) {
-
+  setup(props,) {
+    const menuItemClasses = computed(() => {
+      return [PREFIX_MENU_ITEM, {
+        [`${PREFIX_MENU_ITEM}--active`]: props.isActive,
+        [`${PREFIX_MENU_ITEM}--disabled`]: props.disabled
+      }]
+    })
+    return {menuItemClasses}
   }
 }
 </script>

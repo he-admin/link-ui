@@ -1,6 +1,6 @@
 <template>
-  <li class="mku-menu-group">
-    <div class="mku-menu-group__title">
+  <li class="lku-menu-group">
+    <div class="lku-menu-group__title">
       {{ title }}
     </div>
     <ul>
@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: "MkuMenuGroup",
+  name: "LkuMenuGroup",
   props: {
     title: {
       type: String,

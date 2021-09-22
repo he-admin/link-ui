@@ -1,11 +1,11 @@
 <template>
   <div :class="menuClasses">
-    这是菜单组件
+   <slot></slot>
   </div>
 </template>
 
 <script>
-const MENU = 'mku-menu';
+const MENU = 'lku-menu';
 import {computed} from 'vue'
 
 export default {
@@ -20,8 +20,8 @@ export default {
   setup(props) {
     const menuClasses = computed(() => {
       return [MENU, {
-        [`${MENU}__vertical`]: props.mode === 'vertical',
-        [`${MENU}__horizontal`]: props.mode === '__horizontal',
+        [`${MENU}--vertical`]: props.mode === 'vertical',
+        [`${MENU}--horizontal`]: props.mode === 'horizontal',
       }]
     })
     return {menuClasses}

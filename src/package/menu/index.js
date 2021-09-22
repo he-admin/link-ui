@@ -1,6 +1,13 @@
-import LinkMenu from './src/menu'
+import LkuMenu from './src/menu'
+import LkuMenuGroup from './src/menu-group';
+import LkuMenuItem from './src/menu-item';
 
-LinkMenu.install = function (Vue) {
-  Vue.component(LinkMenu.name, LinkMenu)
+export {
+  LkuMenuGroup,
+  LkuMenuItem
 }
-export default LinkMenu
+
+LkuMenu.install = function (Vue) {
+  Vue.component(LkuMenu.name, LkuMenu)
+}
+export default LkuMenu
