@@ -80,17 +80,14 @@ module.exports = {
 
     config.module
       .rule('md')
-      .test(/\.md$/)
+      .test(/\.md/)
       .use('vue-loader-v16')
       .loader('vue-loader-v16')
-      .tap(() => ({
-        compilerOptions: {
-          preserveWhitespace: false,
-        },
-      }))
+      .options({
+        compiler: require('@vue/compiler-sfc'),
+      })
       .end()
-      .use('md-loader')
-      .loader(path.resolve(__dirname, './build/md-loader/index.js'))
-      .end();
+      .use(path.resolve('./build/md-loader/index.js'))
+      .loader(path.resolve('./build/md-loader/index.js'))
   }
 }
