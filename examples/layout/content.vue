@@ -1,8 +1,10 @@
 <template>
   <doc-header></doc-header>
-  <div>
+  <div class="main-container">
     <nav-slider></nav-slider>
-    <router-view/>
+   <div class="content-wrapper">
+     <router-view/>
+   </div>
   </div>
 </template>
 
@@ -81,6 +83,12 @@ export default {
       font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
       background: transparent;
     }
+  }
+}
+.main-container{
+  display: flex;
+  .nav-slide-container{
+    flex-shrink: 0;
   }
 }
 </style>

@@ -2,7 +2,7 @@
 export default [
   {
     code: 'basic',
-    name: '基础',
+    name: '基础组件',
     children: [
       {
         path: '/component/button',

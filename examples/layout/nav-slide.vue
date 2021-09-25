@@ -1,7 +1,7 @@
 <template>
   <div class="nav-slide-container">
     {{route.name}}
-    <lku-menu :default-active="`Grid`">
+    <lku-menu :default-active="`Grid`" :width="210" :duration="0.2">
       <lku-menu-group v-for="(group,groupIndex) in NavConfigs"
                       :key="groupIndex"
                       :title="group.name">

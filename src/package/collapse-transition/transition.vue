@@ -30,6 +30,7 @@ export default {
     }
 
     const beforeLeave = (el) => {
+      console.log(el);
       el.style.height = el.scrollHeight + 'px'
     }
     const leave = (el) => {

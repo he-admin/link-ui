@@ -1,6 +1,6 @@
 export default [{
   code: 'navigation',
-  name: '导航',
+  name: '导航组件',
   children: [
     {
       path: '/component/menu',
