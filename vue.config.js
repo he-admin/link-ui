@@ -28,7 +28,7 @@ module.exports = {
     config.module
       .rule('js')
       .include
-      .add('/src')
+      //.add('/src') // 表示添加src,所以虽然eslintignore忽略了无用
       .end()
       .use('babel')
       .loader('babel-loader');

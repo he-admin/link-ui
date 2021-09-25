@@ -2,8 +2,9 @@ import './styles/components/menu.less';
 import LkuMenu from './package/menu';
 import LkuMenuGroup from './package/menu-group';
 import LkuMenuItem from './package/menu-item';
+import LkuCollapseTransition from './package/collapse-transition'
 
-const components = [LkuMenu, LkuMenuGroup, LkuMenuItem];
+const components = [LkuMenu, LkuMenuGroup, LkuMenuItem,LkuCollapseTransition];
 
 const install = (Vue) => {
   components.forEach((component) => {
@@ -20,5 +21,6 @@ export default {
   install,
   LkuMenu,
   LkuMenuGroup,
-  LkuMenuItem
+  LkuMenuItem,
+  LkuCollapseTransition
 }

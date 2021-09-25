@@ -11,12 +11,12 @@ module.exports = (md) => {
         const description = m && m.length > 1 ? m[1] : ''
         const content =
           tokens[idx + 1].type === 'fence' ? tokens[idx + 1].content : ''
-        return `<mku-example>
+        return `<demo-block>
         ${description ? `${md.render(description)}` : ''}
         <!--element-demo: ${content}:element-demo-->
         `
       }
-      return '</mku-example>'
+      return '</demo-block>'
     }
   })
 
