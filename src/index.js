@@ -1,10 +1,11 @@
 import './styles/components/menu.less';
+import {LkuSelect, LkuOptionGroup, LkuOption} from './package/select'
 import LkuMenu from './package/menu';
 import LkuMenuGroup from './package/menu-group';
 import LkuMenuItem from './package/menu-item';
-import LkuCollapseTransition from './package/collapse-transition'
+import LkuCollapseTransition from './package/collapse-transition';
 
-const components = [LkuMenu, LkuMenuGroup, LkuMenuItem,LkuCollapseTransition];
+const components = [LkuSelect, LkuOptionGroup, LkuOption, LkuMenu, LkuMenuGroup, LkuMenuItem, LkuCollapseTransition];
 
 const install = (Vue) => {
   components.forEach((component) => {
@@ -19,6 +20,9 @@ const install = (Vue) => {
 export default {
   version: '0.1.0',
   install,
+  LkuSelect,
+  LkuOptionGroup,
+  LkuOption,
   LkuMenu,
   LkuMenuGroup,
   LkuMenuItem,

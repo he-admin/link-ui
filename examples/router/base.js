@@ -40,6 +40,15 @@ export default [
         },
         component: () => import('../docs/zh_CN/menu.md')
       },
+      {
+        path: '/component/select',
+        name: 'Select',
+        meta: {
+          type: 'component',
+          title: 'Select选择',
+        },
+        component: () => import('../docs/zh_CN/select.md')
+      }
     ],
   },
 ];

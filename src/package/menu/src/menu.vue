@@ -1,7 +1,7 @@
 <template>
-  {{ width }}
   <div :class="menuClasses" :style="menuStyle">
-    <slot></slot>
+    <slot>
+    </slot>
   </div>
 </template>
 
