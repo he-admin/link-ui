@@ -1,6 +1,5 @@
 <template>
   <li :class="optionClasses" @click="handleOptionClick">
-    {{ disabled }}
     <slot></slot>
   </li>
 </template>
@@ -40,7 +39,7 @@ export default {
         return event.stopPropagation(); // 阻止冒泡
       }
       // 方法名字
-      dispatch('lku-option-select', {value: props.value, text: props.label || ctx?.$el?.textContent})
+      dispatch('lku-option-select', {value: props.value, name: props.label || ctx?.$el?.textContent})
     }
     return {optionClasses, handleOptionClick}
   }

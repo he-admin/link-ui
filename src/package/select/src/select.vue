@@ -1,10 +1,28 @@
 <template>
-  {{ isOpened }}
+  {{ selectedOptions }}
   <div class="lku-select" :class="selectClasses" :style="{width:width + 'px'}">
     <div class="lku-select__inner"
          @click="handleSelectClick">
+
       <!--      select上方选择区域-->
-      <div class="lku--select__placeholder lku-global-ellipsis">
+      <template v-if="selectedOptions.length">
+        <!--      多选  -->
+        <div class="mku-select__labels" v-if="multiple">
+         <span class="lku-select__labels-item"
+               v-for="(item,index) in selectedOptions"
+               :key="index">
+           <span class="lku-global-ellipsis">{{ item.name }}</span>
+           <i class="lku-icon lku-icon-error-circle"></i>
+         </span>
+        </div>
+        <!--        单选-->
+        <div class="lku-select__text lku-global-ellipsis" v-else>
+          {{ selectedOptions[0]?.name }}
+        </div>
+      </template>
+
+      <!--      placeholder-->
+      <div class="lku--select__placeholder lku-global-ellipsis" v-if="!selectedOptions.length">
         {{ placeholder }}
       </div>
     </div>
@@ -63,7 +81,9 @@ export default {
     const {on} = useEmit();
     // 是否展开下拉框弹出层，之所以定义在这里，因为组件内部后续会涉及到对这个值的更改
     let isOpened = ref(false);
-    const selectedOptions = reactive([]); //所有被选中的
+    const data = reactive({selectedOptions:[]}); //所有被选中的
+    // const selectedOptions = reactive([])
+    const selectedOptions = data.selectedOptions;
     const selectClasses = computed(() => {
       return ['lku-select', {
         'lku-select--opened': isOpened,
@@ -77,21 +97,23 @@ export default {
       }
       isOpened.value = !isOpened.value;
     }
-
     const handleDropdownClick = () => {
-
     }
     /**
      * @method optionClick
      * @description 点击option触发的回调函数
      * @param { Object } data
      */
-
-    const optionClick = (data) => {
-      console.log(data);
+    const handleOptionClick = (data) => {
+      if (props.multiple) {
+        let findIndex = selectedOptions.findIndex(item => item.value === data.value);
+        findIndex === -1 ? selectedOptions.push(data) : selectedOptions.splice(findIndex, 1);
+      } else {
+        selectedOptions = [data];
+      }
     }
-    on('lku-option-select', optionClick)
-    return {selectClasses, handleSelectClick, isOpened, handleDropdownClick}
+    on('lku-option-select', handleOptionClick)
+    return {selectClasses, isOpened, selectedOptions, handleSelectClick, handleDropdownClick}
   }
 }
 </script>
@@ -108,13 +130,26 @@ export default {
     border-radius: 4px;
     cursor: pointer;
 
+    // placeholder
     .lku--select__placeholder {
       height: @height-default-size - 2;
       line-height: @height-default-size - 2;
       padding-left: 10px;
       color: @secondary-text-color;
-
     }
+
+    // 单选输入框样式
+    .lku-select__text {
+      width: 100%;
+      height: @height-default-size - 2;
+      line-height: @height-default-size - 2;
+      text-indent: 10px;
+    }
+
+    // 多选框样式
+   .lku-select__labels-item{
+
+   }
   }
 
   .lku-select__menu {
