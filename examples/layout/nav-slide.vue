@@ -1,6 +1,7 @@
 <template>
   <div class="nav-slide-container">
-    <lku-menu :default-active="`Grid`" :width="210" :duration="0.2">
+    {{route.name}}
+    <lku-menu :default-active="route.name" :width="210" :duration="0.2">
       <lku-menu-group v-for="(group,groupIndex) in NavConfigs"
                       :key="groupIndex"
                       :title="group.name">
@@ -18,6 +19,7 @@
 <script>
 import {NavConfigs} from '../router/index'
 import {useRoute} from 'vue-router';
+import {reactive} from 'vue'
 export default {
   name: "nav-slide",
   data() {
@@ -26,7 +28,7 @@ export default {
     }
   },
   setup(){
-    const route = useRoute();
+    const route =reactive(useRoute());
     return {
       route
     }

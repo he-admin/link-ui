@@ -1,11 +1,11 @@
 <template>
-  <li :class="optionClasses" @click="handleOptionClick">
+  <li class="lku-global-ellipsis" :class="optionClasses" @click="handleOptionClick">
     <slot></slot>
   </li>
 </template>
 
 <script>
-import {computed, inject,getCurrentInstance,onMounted} from 'vue'
+import {ref, computed, inject, getCurrentInstance, onMounted} from 'vue'
 import useEmit from '../../../utils/emiter';
 
 export default {
@@ -22,26 +22,29 @@ export default {
   },
   setup(props) {
     const {dispatch} = useEmit();
-    const {ctx} =getCurrentInstance();
-    onMounted(()=>{
+    const {ctx} = getCurrentInstance();
+    onMounted(() => {
       console.log(ctx);
     })
     const selectedOptions = inject('lkuSelected');
-    let isActive = selectedOptions.some(item => item.value === props.value);
-    const optionClasses = computed(() => {
-      return ['lku-option', {
-        'lku-option--actived': isActive,
-        'lku-option--disabled': props.disabled
-      }]
-    });
+    let isActive = ref(false);
+
     const handleOptionClick = (event) => {
+      console.log(selectedOptions,props.value,isActive.value);
       if (props.disabled) {
         return event.stopPropagation(); // 阻止冒泡
       }
       // 方法名字
       dispatch('lku-option-select', {value: props.value, name: props.label || ctx?.$el?.textContent})
     }
-    return {optionClasses, handleOptionClick}
+    const optionClasses = computed(() => {
+      isActive.value = selectedOptions.value.some(item => item.value === props.value);
+      return ['lku-option', {
+        'lku-option--actived': isActive.value,
+        'lku-option--disabled': props.disabled
+      }]
+    });
+    return {optionClasses, handleOptionClick,selectedOptions}
   }
 }
 </script>

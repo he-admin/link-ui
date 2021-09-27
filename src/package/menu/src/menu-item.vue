@@ -1,4 +1,5 @@
 <template>
+<!--  {{menu}}-->
   <li :class="[menuItemClasses,className]" @click="handleClick">
     <slot></slot>
   </li>
@@ -35,6 +36,8 @@ export default {
   setup(props, {emit}) {
     const {dispatch} = useEmit();
     const menu = inject('menu');
+    const defaultActive = inject('defaultActive');
+    console.log('defaultActive',menu,1213);
     const handleClick = () => {
       emit('click', props); // 向父组件(一层)传递事件
       dispatch('menu-item-click', props) // 向父级及以上的组件传递事件（多层）
@@ -45,7 +48,7 @@ export default {
 
     const menuItemClasses = computed(() => {
       return [PREFIX_MENU_ITEM, {
-        [`${PREFIX_MENU_ITEM}--active`]: props.name === menu.activeItemName.value,//isActive.value,
+        [`${PREFIX_MENU_ITEM}--active`]: props.name === defaultActive.value,//isActive.value,
         [`${PREFIX_MENU_ITEM}--disabled`]: props.disabled
       }]
     })

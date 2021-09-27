@@ -1,4 +1,5 @@
 <template>
+  {{ defaultActive }}
   <div :class="menuClasses" :style="menuStyle">
     <slot>
     </slot>
@@ -8,7 +9,7 @@
 <script>
 const MENU = 'lku-menu';
 const MENU_WIDTH = 200;
-import {computed, provide, ref} from 'vue'
+import {computed, provide, ref, onMounted, nextTick} from 'vue'
 import {useRouter} from 'vue-router'
 import useEmit from '../../../utils/emiter';
 
@@ -39,7 +40,7 @@ export default {
     // 默认选中的菜单项
     defaultActive: {
       type: String,
-      default: ''
+      // default: ''
     },
     defaultOpened: {
       type: Array,
@@ -47,8 +48,18 @@ export default {
     }
   },
   setup(props, {emit}) {
-    let activeItemName = ref(props.defaultActive);
+
+    let activeItemName = computed(()=>{
+      return props.defaultActive;
+    })
+    //activeItemName.value = props.defaultActive
+    // setTimeout(() => {
+    //    activeItemName.value = props.defaultActive
+    // }, 1000)
+
+    provide('defaultActive',activeItemName);
     provide('menu', {activeItemName});
+    //provide('defaultActive', activeItemName)
     //provide('handleItemClick', handleItemClick);
 
     const router = useRouter();
