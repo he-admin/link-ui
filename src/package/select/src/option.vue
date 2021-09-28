@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {ref, computed, inject, getCurrentInstance, onMounted} from 'vue'
+import {ref, computed, inject, getCurrentInstance, onMounted,nextTick} from 'vue'
 import useEmit from '../../../utils/emiter';
 
 export default {
@@ -27,6 +27,8 @@ export default {
       console.log(ctx);
     })
     const selectedOptions = inject('lkuSelected');
+    const modelValue = inject('modelValue');
+
     let isActive = ref(false);
 
     const handleOptionClick = (event) => {
@@ -34,9 +36,19 @@ export default {
       if (props.disabled) {
         return event.stopPropagation(); // 阻止冒泡
       }
-      // 方法名字
-      dispatch('lku-option-select', {value: props.value, name: props.label || ctx?.$el?.textContent})
+      nextTick(()=>{
+        // 方法名字
+        dispatch('lku-option-select', {value: props.value, name: props.label || ctx?.$el?.textContent})
+      })
+
     }
+    const modelArr = Array.isArray(modelValue)? modelValue: [modelValue];
+    modelArr.forEach(item=>{
+      if(item===props.value){
+        handleOptionClick();
+        console.log('你好');
+      }
+    })
     const optionClasses = computed(() => {
       isActive.value = selectedOptions.value.some(item => item.value === props.value);
       return ['lku-option', {

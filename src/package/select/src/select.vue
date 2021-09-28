@@ -4,7 +4,6 @@
          @mousemove="handleMouseHover(true)"
          @mouseout="handleMouseHover(false)"
          @click="handleSelectClick">
-
       <!--      select上方选择区域-->
       <template v-if="selectedOptions.length">
         <!--      多选  -->
@@ -43,14 +42,14 @@
 </template>
 
 <script>
-import {ref, toRef, toRefs, reactive, computed, provide} from 'vue';
+import {ref, toRef, toRefs, reactive, watch, watchEffect, computed, provide, getCurrentInstance, nextTick} from 'vue';
 import useEmit from '../../../utils/emiter';
 
 export default {
   name: "LkuSelect",
   props: {
     // 表示选中的值
-    value: {
+    modelValue: {
       type: [String, Number, Array]
     },
     width: {
@@ -83,13 +82,14 @@ export default {
       default: false
     }
   },
-  setup(props,{emit}) {
+  setup(props, {emit, attrs}) {
     const {on} = useEmit();
     // 是否展开下拉框弹出层，之所以定义在这里，因为组件内部后续会涉及到对这个值的更改
     let isOpened = ref(false);
     // 鼠标是否移入select选择框
     let isHover = ref(false);
-    const selectedOptions = ref([]);
+    const selectedOptions = ref([props.modelValue]);
+    const lkuSelect = ref(null)
     //const data = reactive({selectedOptions: []}); //所有被选中的
     // const selectedOptions = reactive([])
     //const selectedOptions = toRef(data, 'selectedOptions').value;
@@ -103,7 +103,23 @@ export default {
     const lkuIconClasses = computed(() => {
       return ['lku-icon', isShowClearIcon ? 'lku-icon-error-circle' : 'lku-icon-arrow-down']
     })
+
+    const {ctx} = getCurrentInstance();
+    console.log(getCurrentInstance().slots.default());
+    console.log(attrs);
+    // watchEffect(()=>{
+    //   const selected = []; // 用于回显v-model绑定的值
+    //   const {ctx} = getCurrentInstance();
+    //   nextTick(()=>{
+    //     console.log(lkuSelect.value);
+    //   })
+    //
+    //   //const options = findComponentsDownward(ctx,'LkuOption');
+    //   //console.log(options);
+    //   console.log(props.modelValue);
+    // })
     provide('lkuSelected', selectedOptions);
+    provide('modelValue', props.modelValue)
     const handleSelectClick = () => {
       if (props.disabled) {
         return
@@ -128,22 +144,29 @@ export default {
      */
     const handleOptionClick = (data) => {
       if (props.multiple) {
-        let findIndex = selectedOptions.findIndex(item => item.value === data.value);
-        findIndex === -1 ? selectedOptions.push(data) : selectedOptions.splice(findIndex, 1);
+        let findIndex = selectedOptions.value.findIndex(item => item.value === data.value);
+        findIndex === -1 ? selectedOptions.value.push(data) : selectedOptions.value.splice(findIndex, 1);
       } else {
         selectedOptions.value = [data];
-        console.log(selectedOptions);
       }
-      console.log(selectedOptions.value);
-      emit('input', 121);
-      emit('change', 1213);
+      let modelValue = selectedOptions.value.map(item => item.value);
+      modelValue = props.multiple ? modelValue : modelValue[0];
+      console.log(modelValue)
+      const modelValue2 = props.multiple ? modelValue : modelValue[0];
+      //判断选中option是否发生变化，如果是多选，点一下肯定会变化，若是单选，点击重复的，则不触发change
+      if (props.multiple || (!props.multiple && modelValue !== props.modelValue)) {
+        emit('change', modelValue)
+      }
+      emit('update:modelValue', props.multiple ? modelValue : modelValue[0]); // vue3 自定义组件新写法
     }
+
     on('lku-option-select', handleOptionClick)
     return {
       selectClasses,
       lkuIconClasses,
       isOpened,
       selectedOptions,
+      lkuSelect,
       handleSelectClick,
       handleDropdownClick,
       handleMouseHover
@@ -241,7 +264,7 @@ export default {
     position: absolute;
     margin: 8px 0;
     width: 100%;
-    max-height: 100px;
+    max-height: 500px;
     overflow: auto;
     border-radius: 4px;
     background: #fff;
