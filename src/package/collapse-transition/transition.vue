@@ -1,7 +1,7 @@
 <template>
   <transition
     @before-enter="beforeEnter"
-    @enter="enter"
+    @enter-from="enter"
     @after-enter="beforeEnter"
     @before-leave="beforeLeave"
     @leave="leave"
@@ -12,36 +12,50 @@
 </template>
 
 <script>
+import {getStyle, setInlineStyle} from '../../utils/dom';
+
 export default {
-  name:'LkuCollapseTransition',
+  name: 'LkuCollapseTransition',
   setup() {
+    const style = {
+      transition: `all .5s ease`,
+      overflow: 'hidden',
+    };
     const beforeEnter = (el) => {
-      el.style.transition = 'height .4s ease'
-      el.style.overflow = 'hidden'
-      el.style.height = el.scrollHeight + 'px'
+      el.dataset.paddingTop = getStyle(el).paddingTop; // el.style.paddingTop
+      el.dataset.paddingBottom = getStyle(el).paddingBottom; // el.style.paddingBottom
+      setInlineStyle(
+        el,
+        Object.assign(style, {height: 0}),
+      );
     }
     const enter = (el) => {
-      el.style.height = el.scrollHeight + 'px'
+     setTimeout(()=>{
+       setInlineStyle(el, {
+         height: `${el.scrollHeight}px`,
+         paddingTop: el.dataset.paddingTop,
+         paddingBottom: el.dataset.paddingBottom,
+       });
+     },0)
     }
 
     const afterEnter = (el) => {
-      el.style.height = el.scrollHeight + 'px'
-      el.style.overflow = 'hidden'
+      setInlineStyle(el, {height: '', overflow: ''});
     }
 
     const beforeLeave = (el) => {
-      console.log(el);
-      el.style.height = el.scrollHeight + 'px'
+      setInlineStyle(el, Object.assign(style, {
+        height: `${el.scrollHeight}px`,
+        overflow: '',
+      }));
     }
     const leave = (el) => {
-      el.style.transition = 'height .4s ease'
-      if (el.scrollHeight !== 0) {
-        el.style.height = 0
-      }
+      setTimeout(() => {
+        setInlineStyle(el, {height: 0, overflow: 'hidden'});
+      }, 0)
     }
     const afterLeave = (el) => {
-      el.style.height = el.scrollHeight + 'px'
-      el.style.overflow = ''
+      setInlineStyle(el, {height: 0, overflow: 'hidden'});
     }
 
     return {

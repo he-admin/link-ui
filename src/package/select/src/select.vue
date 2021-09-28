@@ -1,5 +1,7 @@
 <template>
-  <div class="lku-select" :class="selectClasses" :style="{width:width + 'px'}">
+  {{selectedOptions}} {{modelValue}}
+  <div class="lku-select" :class="selectClasses"
+       :style="{width:width + 'px'}">
     <div class="lku-select__inner"
          @mousemove="handleMouseHover(true)"
          @mouseout="handleMouseHover(false)"
@@ -10,6 +12,7 @@
         <div class="lku-select__labels" v-if="multiple">
          <span class="lku-select__labels-item"
                v-for="(item,index) in selectedOptions"
+               @click.stop="handleDelete(item)"
                :key="index">
            <span class="lku-global-ellipsis">{{ item.name }}</span>
            <i class="lku-icon lku-icon-error-circle"></i>
@@ -26,7 +29,8 @@
         {{ placeholder }}
       </div>
       <!--      清除和箭头icon-->
-      <span class="lku-select__icon">
+      <span class="lku-select__icon" @click="handleClear">
+        {{ isShowClearIcon }}
      <i :class="lkuIconClasses"></i>
     </span>
     </div>
@@ -42,7 +46,7 @@
 </template>
 
 <script>
-import {ref, toRef, toRefs, reactive, watch, watchEffect, computed, provide, getCurrentInstance, nextTick} from 'vue';
+import {ref, computed, provide} from 'vue';
 import useEmit from '../../../utils/emiter';
 
 export default {
@@ -88,7 +92,8 @@ export default {
     let isOpened = ref(false);
     // 鼠标是否移入select选择框
     let isHover = ref(false);
-    const selectedOptions = ref([props.modelValue]);
+    console.log(props.modelValue);
+    const selectedOptions = ref([])//props.multiple?props.modelValue:ref([props.modelValue]);
     const lkuSelect = ref(null)
     //const data = reactive({selectedOptions: []}); //所有被选中的
     // const selectedOptions = reactive([])
@@ -99,41 +104,36 @@ export default {
         'lku-select--disabled': props.disabled
       }]
     });
-    const isShowClearIcon = props.clearable && isHover && selectedOptions.length !== 0
-    const lkuIconClasses = computed(() => {
-      return ['lku-icon', isShowClearIcon ? 'lku-icon-error-circle' : 'lku-icon-arrow-down']
+    const isShowClearIcon = computed(() => {
+      return props.clearable && isHover.value && selectedOptions.value.length !== 0
     })
-
-    const {ctx} = getCurrentInstance();
-    console.log(getCurrentInstance().slots.default());
-    console.log(attrs);
-    // watchEffect(()=>{
-    //   const selected = []; // 用于回显v-model绑定的值
-    //   const {ctx} = getCurrentInstance();
-    //   nextTick(()=>{
-    //     console.log(lkuSelect.value);
-    //   })
-    //
-    //   //const options = findComponentsDownward(ctx,'LkuOption');
-    //   //console.log(options);
-    //   console.log(props.modelValue);
-    // })
+    const lkuIconClasses = computed(() => {
+      return ['lku-icon', isShowClearIcon.value ? 'lku-icon-error-circle' : 'lku-icon-arrow-down']
+    })
     provide('lkuSelected', selectedOptions);
     provide('modelValue', props.modelValue)
     const handleSelectClick = () => {
       if (props.disabled) {
         return
       }
-      console.log(isOpened.value);
       isOpened.value = !isOpened.value;
     }
     /**
      * @method handleMouseHover
      * @description 处理鼠标划入划出
-     * @param { Boolean } isHover
+     * @param { Boolean } isHove
      */
     const handleMouseHover = (isHove) => {
       isHover.value = isHove;
+    }
+    const handleDelete = (option) => {
+         selectedOptions.value = selectedOptions.value.filter(item=>item.value!==option.value)
+    }
+    const handleClear = (event) => {
+      selectedOptions.value = [];
+      if (!isOpened.value) {
+        event.stopPropagation();
+      }
     }
     const handleDropdownClick = () => {
     }
@@ -143,30 +143,41 @@ export default {
      * @param { Object } data
      */
     const handleOptionClick = (data) => {
+      console.log(data);
       if (props.multiple) {
         let findIndex = selectedOptions.value.findIndex(item => item.value === data.value);
         findIndex === -1 ? selectedOptions.value.push(data) : selectedOptions.value.splice(findIndex, 1);
       } else {
         selectedOptions.value = [data];
       }
+      console.log(selectedOptions.value);
       let modelValue = selectedOptions.value.map(item => item.value);
       modelValue = props.multiple ? modelValue : modelValue[0];
-      console.log(modelValue)
-      const modelValue2 = props.multiple ? modelValue : modelValue[0];
       //判断选中option是否发生变化，如果是多选，点一下肯定会变化，若是单选，点击重复的，则不触发change
       if (props.multiple || (!props.multiple && modelValue !== props.modelValue)) {
         emit('change', modelValue)
       }
-      emit('update:modelValue', props.multiple ? modelValue : modelValue[0]); // vue3 自定义组件新写法
+      emit('update:modelValue', modelValue); // vue3 自定义组件新写法
     }
 
-    on('lku-option-select', handleOptionClick)
+    on('lku-option-select', handleOptionClick);
+    on('selectDefault',(data)=>{
+     props.modelValue.forEach(value=>{
+      if(value===data.value){
+        selectedOptions.value.push(data)
+      }
+
+      });
+    })
     return {
       selectClasses,
       lkuIconClasses,
       isOpened,
+      isShowClearIcon,
       selectedOptions,
       lkuSelect,
+      handleDelete,
+      handleClear,
       handleSelectClick,
       handleDropdownClick,
       handleMouseHover
@@ -180,16 +191,15 @@ export default {
   position: relative;
 
   .lku-select__inner {
-    &:hover {
-      border: 1px solid @primary-border-color;
-    }
+    //&:hover {
+    //  border: 1px solid @primary-border-color;
+    //}
 
     max-width: 100%;
     min-height: @height-default-size;
     padding-right: 30px;
     border: 1px solid @base-border-color;
     border-radius: 4px;
-    cursor: pointer;
 
     // placeholder
     .lku--select__placeholder {
@@ -253,6 +263,7 @@ export default {
       bottom: 0; // 这里让绝对定位的元素高度等于select框的高度
       display: flex;
       align-items: center;
+      cursor: pointer;
 
       .lku-icon {
         transition: transform .3s;
@@ -296,6 +307,11 @@ export default {
   }
 }
 
+.lku-select--disabled {
+  cursor: not-allowed;
+  background: @disabled-background-color;
+}
+
 // 当展开select下拉框内容时，才有这个lku-select--opened，所以动态控制了lku-icon-arrow-down的rotate样式
 .lku-select--opened {
   .lku-select__inner {
@@ -313,6 +329,19 @@ export default {
 .lku-select-dropdown-leave-to {
   opacity: 0;
   transform: scaleY(.8);
+}
+
+// select options group
+.lku-options-group {
+  .lku-options-group__title {
+    padding: 0 10px;
+    line-height: 30px;
+    color: #999;
+  }
+
+  .lku-option {
+    padding: 0 20px !important;
+  }
 }
 
 .lku-select-dropdown-enter-active,

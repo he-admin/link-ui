@@ -24,31 +24,39 @@ export default {
     const {dispatch} = useEmit();
     const {ctx} = getCurrentInstance();
     onMounted(() => {
-      console.log(ctx);
+      //console.log(ctx);
     })
     const selectedOptions = inject('lkuSelected');
     const modelValue = inject('modelValue');
-
+    console.log(modelValue);
     let isActive = ref(false);
 
     const handleOptionClick = (event) => {
-      console.log(selectedOptions,props.value,isActive.value);
-      if (props.disabled) {
+      if (props.disabled && event) {
         return event.stopPropagation(); // 阻止冒泡
       }
       nextTick(()=>{
         // 方法名字
         dispatch('lku-option-select', {value: props.value, name: props.label || ctx?.$el?.textContent})
       })
-
     }
-    const modelArr = Array.isArray(modelValue)? modelValue: [modelValue];
-    modelArr.forEach(item=>{
-      if(item===props.value){
-        handleOptionClick();
-        console.log('你好');
-      }
+
+    // const modelArr = Array.isArray(modelValue)? modelValue: [modelValue];
+    // console.log(modelArr);
+    // modelArr.forEach(item=>{
+    //   console.log(item);
+    //   if(item===props.value){
+    //    nextTick(()=>{
+    //      dispatch('lku-option-select', {value: props.value, name: props.label || ctx?.$el?.textContent})
+    //    })
+    //     console.log('你好');
+    //   }
+    // })
+
+    nextTick(()=>{
+      dispatch('selectDefault',{value: props.value, name: props.label || ctx?.$el?.textContent});
     })
+
     const optionClasses = computed(() => {
       isActive.value = selectedOptions.value.some(item => item.value === props.value);
       return ['lku-option', {
