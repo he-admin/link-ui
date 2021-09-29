@@ -1,5 +1,5 @@
 <template>
-  {{selectedOptions}} {{modelValue}}
+   {{ modelValue }}
   <div class="lku-select" :class="selectClasses"
        :style="{width:width + 'px'}">
     <div class="lku-select__inner"
@@ -30,7 +30,6 @@
       </div>
       <!--      清除和箭头icon-->
       <span class="lku-select__icon" @click="handleClear">
-        {{ isShowClearIcon }}
      <i :class="lkuIconClasses"></i>
     </span>
     </div>
@@ -105,7 +104,7 @@ export default {
       }]
     });
     const isShowClearIcon = computed(() => {
-      return props.clearable && isHover.value && selectedOptions.value.length !== 0
+      return !props.disabled && props.clearable && isHover.value && selectedOptions.value.length !== 0
     })
     const lkuIconClasses = computed(() => {
       return ['lku-icon', isShowClearIcon.value ? 'lku-icon-error-circle' : 'lku-icon-arrow-down']
@@ -124,12 +123,22 @@ export default {
      * @param { Boolean } isHove
      */
     const handleMouseHover = (isHove) => {
+      if (props.disabled) {
+        return
+      }
       isHover.value = isHove;
     }
     const handleDelete = (option) => {
-         selectedOptions.value = selectedOptions.value.filter(item=>item.value!==option.value)
+      if (props.disabled) {
+        return
+      }
+      selectedOptions.value = selectedOptions.value.filter(item => item.value !== option.value)
     }
     const handleClear = (event) => {
+      // 如果没有X icon，取消后续执行
+      if (!isShowClearIcon.value) {
+        return
+      }
       selectedOptions.value = [];
       if (!isOpened.value) {
         event.stopPropagation();
@@ -143,14 +152,12 @@ export default {
      * @param { Object } data
      */
     const handleOptionClick = (data) => {
-      console.log(data);
       if (props.multiple) {
         let findIndex = selectedOptions.value.findIndex(item => item.value === data.value);
         findIndex === -1 ? selectedOptions.value.push(data) : selectedOptions.value.splice(findIndex, 1);
       } else {
         selectedOptions.value = [data];
       }
-      console.log(selectedOptions.value);
       let modelValue = selectedOptions.value.map(item => item.value);
       modelValue = props.multiple ? modelValue : modelValue[0];
       //判断选中option是否发生变化，如果是多选，点一下肯定会变化，若是单选，点击重复的，则不触发change
@@ -161,11 +168,11 @@ export default {
     }
 
     on('lku-option-select', handleOptionClick);
-    on('selectDefault',(data)=>{
-     props.modelValue.forEach(value=>{
-      if(value===data.value){
-        selectedOptions.value.push(data)
-      }
+    on('selectDefault', (data) => {
+      props.modelValue.forEach(value => {
+        if (value === data.value) {
+          selectedOptions.value.push(data)
+        }
 
       });
     })
@@ -200,6 +207,7 @@ export default {
     padding-right: 30px;
     border: 1px solid @base-border-color;
     border-radius: 4px;
+    cursor: pointer;
 
     // placeholder
     .lku--select__placeholder {
@@ -247,10 +255,6 @@ export default {
           right: 0;
           height: 18px;
           width: 18px;
-
-          &:hover {
-            font-weight: bold;
-          }
         }
       }
     }
@@ -263,7 +267,6 @@ export default {
       bottom: 0; // 这里让绝对定位的元素高度等于select框的高度
       display: flex;
       align-items: center;
-      cursor: pointer;
 
       .lku-icon {
         transition: transform .3s;
@@ -308,10 +311,21 @@ export default {
 }
 
 .lku-select--disabled {
-  cursor: not-allowed;
-  background: @disabled-background-color;
+  .lku-select__inner {
+    background: @disabled-background-color;
+    cursor: not-allowed;
+
+    .lku-select__icon .lku-icon {
+      color: @disabled-text-color;
+    }
+  }
 }
 
+&:not(.lku-select--disabled) {
+  .lku-icon-error-circle:hover{
+    font-weight: bolder;
+  }
+}
 // 当展开select下拉框内容时，才有这个lku-select--opened，所以动态控制了lku-icon-arrow-down的rotate样式
 .lku-select--opened {
   .lku-select__inner {
