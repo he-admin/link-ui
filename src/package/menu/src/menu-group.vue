@@ -2,12 +2,12 @@
   <li class="lku-menu-group">
     <div class="lku-menu-group__title" @click="isOpen=!isOpen">
       {{ title }}
-      <lku-collapse-transition>
-        <i :class="iconArrowClasses"></i>
-      </lku-collapse-transition>
+<!--      <lku-collapse-transition>-->
+<!--        <i :class="iconArrowClasses"></i>-->
+<!--      </lku-collapse-transition>-->
     </div>
     <lku-collapse-transition>
-      <ul v-show="isOpen">
+      <ul v-if="isOpen">
         <slot></slot>
       </ul>
     </lku-collapse-transition>

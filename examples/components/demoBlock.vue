@@ -18,11 +18,11 @@
         </x-tooltip>
       </div>
 
-<!--      <CollapseTransition>-->
-<!--        <div v-show="isShow">-->
-<!--          <slot name="highlight"></slot>-->
-<!--        </div>-->
-<!--      </CollapseTransition>-->
+      <LkuCollapseTransition>
+        <div v-show="isShow">
+          <slot name="highlight"></slot>
+        </div>
+      </LkuCollapseTransition>
     </div>
     <div class="tag-detail">
       <slot></slot>
@@ -49,7 +49,7 @@ export default {
       globalProperties
     })
 
-    const isShow = ref(false)
+    const isShow = ref(true)
     const handleCode = () => {
       isShow.value = !isShow.value
     }

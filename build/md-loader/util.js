@@ -9,6 +9,7 @@ function stripScript(content) {
 
 function stripStyle(content) {
   const result = content.match(/<(style)\s*>([\s\S]+)<\/\1>/)
+  console.log(result && result[2] ? result[2].trim() : '');
   return result && result[2] ? result[2].trim() : ''
 }
 
@@ -31,7 +32,7 @@ function stripTemplate(content) {
 //     .join('\n')
 // }
 
-function genInlineComponentText(template, script) {
+function genInlineComponentText(template, script,style) {
 
   const compiled = compiler.compile(template, { prefixIdentifiers: true })
 

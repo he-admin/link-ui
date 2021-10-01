@@ -35,7 +35,6 @@ export default {
       margin: 0;
       padding: 20px;
       line-height: 1.6;
-      background: transparent;
       font-family: Consolas,Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     }
   }

@@ -2,9 +2,11 @@
   <doc-header></doc-header>
   <div class="main-container">
     <nav-slider></nav-slider>
-   <div class="content-wrapper">
-     <router-view/>
-   </div>
+    <section class="docs-content">
+      <div class="content-wrapper">
+        <router-view/>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -85,10 +87,22 @@ export default {
     }
   }
 }
-.main-container{
+
+.main-container {
   display: flex;
-  .nav-slide-container{
+
+  .nav-slide-container {
     flex-shrink: 0;
+    padding: 20px 0;
+  }
+
+  .docs-content {
+    min-height: 100%;
+    background: #fafeff;
+
+    .content-wrapper {
+      padding: 20px 30px;
+    }
   }
 }
 </style>

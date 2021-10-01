@@ -1,7 +1,7 @@
 <template>
   <transition
     @before-enter="beforeEnter"
-    @enter-from="enter"
+    @enter="enter"
     @after-enter="beforeEnter"
     @before-leave="beforeLeave"
     @leave="leave"
@@ -12,50 +12,35 @@
 </template>
 
 <script>
-import {getStyle, setInlineStyle} from '../../utils/dom';
-
 export default {
   name: 'LkuCollapseTransition',
   setup() {
-    const style = {
-      transition: `all .5s ease`,
-      overflow: 'hidden',
-    };
     const beforeEnter = (el) => {
-      el.dataset.paddingTop = getStyle(el).paddingTop; // el.style.paddingTop
-      el.dataset.paddingBottom = getStyle(el).paddingBottom; // el.style.paddingBottom
-      setInlineStyle(
-        el,
-        Object.assign(style, {height: 0}),
-      );
+      el.style.transition = 'height .4s ease'
+      el.style.overflow = 'hidden'
+      el.style.height = el.scrollHeight + 'px'
     }
     const enter = (el) => {
-     setTimeout(()=>{
-       setInlineStyle(el, {
-         height: `${el.scrollHeight}px`,
-         paddingTop: el.dataset.paddingTop,
-         paddingBottom: el.dataset.paddingBottom,
-       });
-     },0)
+      el.style.height = el.scrollHeight + 'px'
     }
 
     const afterEnter = (el) => {
-      setInlineStyle(el, {height: '', overflow: ''});
+      el.style.height = el.scrollHeight + 'px'
+      el.style.overflow = 'hidden'
     }
 
     const beforeLeave = (el) => {
-      setInlineStyle(el, Object.assign(style, {
-        height: `${el.scrollHeight}px`,
-        overflow: '',
-      }));
+      el.style.height = el.scrollHeight + 'px'
     }
     const leave = (el) => {
-      setTimeout(() => {
-        setInlineStyle(el, {height: 0, overflow: 'hidden'});
-      }, 0)
+      el.style.transition = 'height .4s ease'
+      if (el.scrollHeight !== 0) {
+        el.style.height = 0
+      }
     }
     const afterLeave = (el) => {
-      setInlineStyle(el, {height: 0, overflow: 'hidden'});
+      el.style.height = el.scrollHeight + 'px'
+      el.style.overflow = ''
     }
 
     return {

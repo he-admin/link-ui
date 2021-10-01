@@ -1,5 +1,4 @@
 <template>
-  {{ defaultActive }}
   <div :class="menuClasses" :style="menuStyle">
     <slot>
     </slot>

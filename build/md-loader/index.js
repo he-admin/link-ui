@@ -1,4 +1,4 @@
-const { stripScript, stripTemplate, genInlineComponentText } = require('./util')
+const {stripStyle, stripScript, stripTemplate, genInlineComponentText } = require('./util')
 const md = require('./config')
 const matter = require('gray-matter');
 
@@ -30,8 +30,8 @@ function mdLoader (source) {
     const commentContent = content.slice(commentStart + startTagLen, commentEnd)
     const html = stripTemplate(commentContent)
     const script = stripScript(commentContent)
-
-    const demoComponentContent = genInlineComponentText(html, script)
+    const style = stripStyle(commentContent)
+    const demoComponentContent = genInlineComponentText(html, script,style)
 
     const demoComponentName = `element-demo${id}`
     output.push(`<template #source><${demoComponentName} /></template>`)

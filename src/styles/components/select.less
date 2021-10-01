@@ -1,6 +1,6 @@
 .lku-select {
   position: relative;
-
+  margin-left: 10px !important;
   .lku-select__inner {
     max-width: 100%;
     min-height: @height-default-size;
@@ -84,6 +84,42 @@
     background: #fff;
     box-shadow: @base-shadow-border-color;
     z-index: 10;
+
+
+    // select option
+    .lku-option {
+      padding: 0 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      line-height: 30px;
+      user-select: none; // li标签会默认选中,清除选中状态
+      cursor: pointer;
+
+      .lku-option-text {
+        padding-right: 10px;
+      }
+
+      // 如果不包含这个类，hover时样式设置
+      &:not(.lku-option--disabled):hover {
+        background: @base-hover-color
+      }
+
+      &--disabled {
+        cursor: not-allowed;
+
+        span {
+          color: @disabled-text-color;
+        }
+      }
+
+      &--actived {
+        //background: @base-hover-color;
+        span {
+          color: @primary-background-color;
+        }
+      }
+    }
   }
 
   &:not(.lku-select--disabled) {
@@ -138,39 +174,6 @@
     color: #999;
   }
 
-  // select option
-  .lku-option {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    line-height: 30px;
-    user-select: none; // li标签会默认选中,清除选中状态
-    cursor: pointer;
-
-    .lku-option-text {
-      padding-right: 10px;
-    }
-
-    // 如果不包含这个类，hover时样式设置
-    &:not(.lku-option--disabled):hover {
-      background: @base-hover-color
-    }
-
-    &--disabled {
-      cursor: not-allowed;
-      span {
-        color: @disabled-text-color;
-      }
-    }
-
-    &--actived {
-      //background: @base-hover-color;
-     span{
-       color: @primary-background-color;
-     }
-    }
-  }
 }
 
 .lku-select-dropdown-enter-active,

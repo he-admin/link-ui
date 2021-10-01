@@ -1,5 +1,5 @@
 <template>
-  <div class="lku-select" :class="selectClasses"
+  <div :class="selectClasses"
        v-clickoutside="clickOutside"
        :style="{width:width + 'px'}">
     <div class="lku-select__inner"
