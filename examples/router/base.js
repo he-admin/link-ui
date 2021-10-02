@@ -32,13 +32,13 @@ export default [
         component: () => import('../docs/zh_CN/menu.md')
       },
       {
-        path: '/component/icon',
-        name: 'Icon',
+        path: '/component/switch',
+        name: 'Switch',
         meta: {
           type: 'component',
-          title: 'Icon 图标',
+          title: 'Switch开关',
         },
-        component: () => import('../docs/zh_CN/menu.md')
+        component: () => import('../docs/zh_CN/switch.md')
       },
       {
         path: '/component/select',

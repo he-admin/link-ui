@@ -101,6 +101,7 @@ export default {
 
   .docs-content {
     min-height: 100%;
+    width: 100%;
     background: #fafeff;
 
     .content-wrapper {

@@ -5,8 +5,8 @@ import LkuMenu from './package/menu';
 import LkuMenuGroup from './package/menu-group';
 import LkuMenuItem from './package/menu-item';
 import LkuCollapseTransition from './package/collapse-transition';
-
-const components = [LkuSelect, LkuOptionGroup, LkuOption, LkuMenu, LkuMenuGroup, LkuMenuItem, LkuCollapseTransition];
+import LkuSwitch from './package/switch/index';
+const components = [LkuSelect, LkuOptionGroup, LkuOption, LkuMenu, LkuMenuGroup, LkuMenuItem, LkuCollapseTransition,LkuSwitch];
 
 const install = (Vue) => {
   components.forEach((component) => {
@@ -27,5 +27,6 @@ export default {
   LkuMenu,
   LkuMenuGroup,
   LkuMenuItem,
-  LkuCollapseTransition
+  LkuCollapseTransition,
+  LkuSwitch
 }
