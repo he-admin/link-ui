@@ -60,6 +60,9 @@ export default {
       font-weight: normal;
       font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     }
+    tr:hover{
+      background: #fafafa;
+    }
 
     th {
       font-weight: bold;
