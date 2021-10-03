@@ -2,10 +2,15 @@
   <div :class="switchClasses"
        :style="switchStyle"
        @click="handleClick">
-   <span class="lku-switch__icon">
-
+    <span class="lku-switch__inner-before" v-show="switchValue">
+      <slot name="open"></slot>
+    </span>
+    <span :class="['lku-switch__icon',{'lku-switch__icon-loading':loading}]">
+     <i></i>
    </span>
-    <span class="lku-switch__inner-after"></span>
+    <span class="lku-switch__inner-after" v-show="!switchValue">
+         <slot name="close"></slot>
+    </span>
   </div>
 </template>
 
@@ -42,6 +47,11 @@ export default {
     width: {
       type: Number,
       default: 50
+    },
+    // 切换时是否显示loading，常用于请求接口
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
   name: "LkuSwitch",
@@ -73,7 +83,6 @@ export default {
       if (switchBgColor) {
         obj.backgroundColor = switchBgColor.value; // computed计算出来的值，模板上使用不需要.value，在setup上需要
       }
-      console.log(obj);
       return obj;
     })
     const switchValue = ref(props.modelValue);
@@ -113,8 +122,42 @@ export default {
     transition: left .2s ease; // 属性 时间 动画类型
   }
 
+  .lku-switch__icon-loading {
+    // 动画名称、时间、动画类型、永久
+    animation: lkuSwitchLoading 1s linear infinite;
+
+    i {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 60%;
+      height: 60%;
+      border-bottom: 2px dotted #c5c8ce;
+      border-right: 2px dotted #c5c8ce;
+      border-radius: 50%;
+    }
+  }
+
   &:not(.lku-switch__disabled):hover {
     opacity: .8;
+  }
+
+  .lku-switch__inner-before {
+    //display: inline-flex;
+    align-items: center;
+    padding-left: 6px;
+    height: @size-default;
+    color: @white-color;
+  }
+
+  .lku-switch__inner-after {
+    //display: inline-flex;
+    align-items: center;
+    height: @size-default;
+    padding-left: 6px;
+    color: @white-color;
   }
 }
 
@@ -142,6 +185,15 @@ export default {
       left: calc(100% - 26px)
     }
   }
+
+  .lku-switch__inner-before {
+    height: @size-large;
+  }
+
+  .lku-switch__inner-after {
+    height: @size-large;
+    padding-left: @size-large + 2;
+  }
 }
 
 // small尺寸样式
@@ -160,11 +212,29 @@ export default {
       left: calc(100% - 22px)
     }
   }
+
+  .lku-switch__inner-before {
+    height: @size-small;
+  }
+
+  .lku-switch__inner-after {
+    height: @size-small;
+    padding-left: @size-small + 5;
+  }
 }
 
 // disabled样式
 .lku-switch__disabled {
   opacity: .5;
   cursor: not-allowed;
+}
+
+@keyframes lkuSwitchLoading {
+  form {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(1turn);
+  }
 }
 </style>
