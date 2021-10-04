@@ -6,7 +6,7 @@
       <slot name="open"></slot>
     </span>
     <span :class="['lku-switch__icon',{'lku-switch__icon-loading':loading}]">
-     <i></i>
+     <i :style="{borderColor: switchBgColor}"></i>
    </span>
     <span class="lku-switch__inner-after" v-show="!switchValue">
          <slot name="close"></slot>
@@ -15,14 +15,14 @@
 </template>
 
 <script>
-import {ref, computed} from 'vue';
+import {ref,watch, watchEffect, computed} from 'vue';
 
 const SIZE_VALUE = ['small', 'medium', 'large'];
 export default {
   props: {
     // v-model绑定的值
     modelValue: {
-      type: Boolean,
+      type: [Boolean, String, Number],
       default: false
     },
     // switch按钮大小
@@ -38,11 +38,11 @@ export default {
     },
     // 自定义开启时样式
     activeColor: {
-      type: String,
+      type: String
     },
     // 自定义关闭时样式
     inactiveColor: {
-      type: String,
+      type: String
     },
     width: {
       type: Number,
@@ -52,10 +52,27 @@ export default {
     loading: {
       type: Boolean,
       default: false
+    },
+    // 自定义开启状态的值
+    trueValue: {
+      type: [Boolean, Number, String],
+      default: true
+    },
+    //  自定义关闭状态的值
+    falseValue: {
+      type: [Boolean, Number, String],
+      default: false
     }
   },
+  emits: ['click', 'change', 'update:modelValue'],
   name: "LkuSwitch",
   setup(props, {emit}) {
+    // 根据v-model与trueFalse计算布尔值
+    const switchValue = computed(() => {
+      return props.modelValue === props.trueValue;
+    })
+
+    // switch样式 开启、关闭、禁用、尺寸
     const switchClasses = computed(() => {
       return ['lku-switch',
         {
@@ -65,17 +82,22 @@ export default {
           'lku-switch__sm': props.size === 'small'
         }]
     });
+
     // 自定义Switch开启与关闭时背景颜色
     const switchBgColor = computed(() => {
       let bgColor = '';
-      if (props.modelValue && props.activeColor) {
+      if (switchValue.value && props.activeColor) {
         bgColor = props.activeColor
       }
-      if (!props.modelValue && props.inactiveColor) {
+      if (!switchValue.value && props.inactiveColor) {
         bgColor = props.inactiveColor
       }
       return bgColor;
     });
+
+    // loading时转圈圈的border与当前背景色相同
+    const switchLoadingStyle = switchBgColor.value;
+
     // 自定义Switch样式
     const switchStyle = computed(() => {
       let obj = {};
@@ -85,15 +107,33 @@ export default {
       }
       return obj;
     })
-    const switchValue = ref(props.modelValue);
-    const handleClick = () => {
-      if (props.disabled) {
+    let value;
+    const handleClick = (e) => {
+      // 禁用或者loading状态下无法点击
+      if (props.disabled || props.loading) {
         return
       }
-      switchValue.value = !switchValue.value;
-      emit('update:modelValue', switchValue.value)
+      emit('click', e);
+       value = !switchValue.value ? props.trueValue : props.falseValue
+      emit('update:modelValue', value);
+    };
+    watch(()=>{
+      return switchValue.value
+    },()=>{
+      emit('change', value);
+    })
+    // 检测自定义true和false时，v-model绑定值是否合法
+    const checkValueIsValid = (newValue) => {
+      const isInclude = [props.trueValue, props.falseValue].includes(newValue);
+      if (!isInclude) {
+        new TypeError(`the switch value is valid, expect to ${props.trueValue} or ${props.falseValue}.`)
+      }
     }
-    return {switchValue, switchBgColor, switchClasses, switchStyle, handleClick}
+
+    watchEffect(() => {
+      checkValueIsValid();
+    })
+    return {switchValue, switchBgColor, switchLoadingStyle, switchClasses, switchStyle, handleClick}
   }
 }
 </script>
@@ -107,8 +147,10 @@ export default {
   margin-right: 8px;
   display: inline-block;
   height: @size-default;
+  line-height: @size-default;
   border-radius: 13px;
   cursor: pointer;
+  user-select: none;
   background: @dark-disabled-background-color;
 
   .lku-switch__icon {
@@ -134,8 +176,8 @@ export default {
       transform: translate(-50%, -50%);
       width: 60%;
       height: 60%;
-      border-bottom: 2px dotted #c5c8ce;
-      border-right: 2px dotted #c5c8ce;
+      border-bottom: 2px dotted @dark-disabled-background-color;
+      border-right: 2px dotted @dark-disabled-background-color;
       border-radius: 50%;
     }
   }
@@ -163,6 +205,12 @@ export default {
 
 .lku-switch__opened {
   background: @primary-background-color;
+
+  .lku-switch__icon-loading {
+    i {
+      border-color: @primary-border-color;
+    }
+  }
 
   .lku-switch__icon {
     left: calc(100% - 24px);

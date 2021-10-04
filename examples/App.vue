@@ -14,8 +14,8 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
 #app {
-
+ color: @regular-text-color;
 }
 </style>
