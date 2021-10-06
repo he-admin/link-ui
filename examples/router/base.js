@@ -5,13 +5,13 @@ export default [
     name: '基础组件',
     children: [
       {
-        path: '/component/button',
-        name: 'Button',
+        path: '/component/checkbox',
+        name: 'Checkbox',
         meta: {
           type: 'component',
-          title: 'Button 按钮',
+          title: 'Checkbox复选框',
         },
-        component: () => import('../docs/zh_CN/menu.md')
+        component: () => import('../docs/zh_CN/checkbox.md')
       },
       {
         path: '/component/badge',

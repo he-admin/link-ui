@@ -1,9 +1,9 @@
 <template>
-  <div class="mku-example">
-    <div class="mku-example__component">
+  <div class="lku-example">
+    <div class="lku-example__component">
       <slot name="source" />
     </div>
-    <div class="mku-example__code">
+    <div class="lku-example__code">
       <slot name="highlight" />
     </div>
   </div>
@@ -12,20 +12,20 @@
 <script>
 
 export default {
-  name: 'MkuExample',
+  name: 'LkuExample',
 };
 </script>
 
 <style lang="less">
 @border-color-lighter: #EBEEF5;
-.mku-example {
+.lku-example {
   position: relative;
   padding: 20px !important;
   margin-top: 20px !important;
   background: #fff;
   border-radius: 4px;
   box-shadow: 0 0 6px #dcdee2;
-  .mku-example__code {
+  .lku-example__code {
     margin-top: 20px;
     background: #fafafa;
     border: 1px solid @border-color-lighter;

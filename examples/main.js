@@ -11,6 +11,6 @@ import '../src/styles/index.less' // 组件的样式
 import clickoutside from '../src/directives/clickoutside'
 
 let app = createApp(App);
-app.component('mku-example', MarketUiExample);
+app.component('lku-example', MarketUiExample);
 app.component('demo-block',MarketUiExample)
 app.directive('clickoutside',clickoutside).use(router).use(LinkUI).mount('#app');

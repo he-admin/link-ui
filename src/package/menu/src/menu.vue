@@ -72,7 +72,7 @@ export default {
     })
     const menuStyle = computed(() => {
       // 只有vertical模式，才支持定宽
-      let objStyle = {width: MENU_WIDTH + 'px'};
+      let objStyle = {minWidth: MENU_WIDTH + 'px'};
       if (props.mode === 'vertical') {
         // assign第一个参数是目标参数，后面的参数都是源对象
         Object.assign(objStyle, {width: props.width + 'px'});
