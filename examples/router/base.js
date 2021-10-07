@@ -14,13 +14,13 @@ export default [
         component: () => import('../docs/zh_CN/checkbox.md')
       },
       {
-        path: '/component/badge',
-        name: 'Badge',
+        path: '/component/radio',
+        name: 'Radio',
         meta: {
           type: 'component',
-          title: 'Badge 徽章',
+          title: 'Radio 单选',
         },
-        component: () => import('../docs/zh_CN/menu.md')
+        component: () => import('../docs/zh_CN/radio.md')
       },
       {
         path: '/component/grid',
