@@ -23,13 +23,13 @@ export default [
         component: () => import('../docs/zh_CN/radio.md')
       },
       {
-        path: '/component/grid',
-        name: 'Grid',
+        path: '/component/input',
+        name: 'Input',
         meta: {
           type: 'component',
-          title: 'Grid 栅格',
+          title: 'Input 输入框',
         },
-        component: () => import('../docs/zh_CN/menu.md')
+        component: () => import('../docs/zh_CN/input.md')
       },
       {
         path: '/component/switch',

@@ -1,5 +1,11 @@
 import './styles/components/menu.less';
-import './styles/components/select.less'
+import './styles/components/select.less';
+import './styles/components/switch.less';
+import './styles/components/radio.less';
+import './styles/components/checkbox.less';
+import './styles/components/input.less';
+
+
 import {LkuSelect, LkuOptionGroup, LkuOption} from './package/select'
 import LkuMenu from './package/menu';
 import LkuMenuGroup from './package/menu-group';
@@ -8,10 +14,11 @@ import LkuCollapseTransition from './package/collapse-transition';
 import LkuSwitch from './package/switch/index';
 import {LkuCheckbox, LkuCheckboxGroup} from './package/checkbox/index';
 import {LkuRadio, LkuRadioGroup} from './package/radio/index';
+import LkuInput from './package/input/index';
 
 const components = [LkuSelect, LkuOptionGroup, LkuOption, LkuMenu, LkuMenuGroup,
   LkuMenuItem, LkuCollapseTransition, LkuSwitch, LkuCheckbox, LkuCheckboxGroup,
-  LkuRadio, LkuRadioGroup];
+  LkuRadio, LkuRadioGroup, LkuInput];
 
 const install = (Vue) => {
   components.forEach((component) => {
@@ -35,5 +42,6 @@ export default {
   LkuCollapseTransition,
   LkuSwitch,
   LkuCheckbox, LkuCheckboxGroup,
-  LkuRadio, LkuRadioGroup
+  LkuRadio, LkuRadioGroup,
+  LkuInput
 }
