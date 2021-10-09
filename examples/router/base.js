@@ -48,6 +48,15 @@ export default [
           title: 'Select选择',
         },
         component: () => import('../docs/zh_CN/select.md')
+      },
+      {
+        path: '/component/form',
+        name: 'Form',
+        meta: {
+          type: 'component',
+          title: 'Form表单',
+        },
+        component: () => import('../docs/zh_CN/form.md')
       }
     ],
   },
