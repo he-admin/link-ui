@@ -1,7 +1,7 @@
 <template>
-  <div :class="['input-wrapper']">
-    <template v-if="type==='text'">
-      <input type="text"
+  <div :class="['lku-input-wrapper']">
+    <template v-if="type!=='textarea'">
+      <input :type="type"
              ref="input"
              :placeholder="placeholder"
              :class="['lku-input',`lku-input__${size}`]"
@@ -65,7 +65,7 @@ export default {
     type: {
       type: String,
       default: 'text',
-      validator: (val) => ['text', 'textarea'].includes(val)
+      validator: (val) => ['text', 'textarea',].includes(val)
     },
     rows: {
       type: Number,

@@ -2276,8 +2276,8 @@ async-settle@^1.0.0:
 
 async-validator@^4.0.3:
   version "4.0.3"
-  resolved "http://nexus.linklogis.cn/repository/lls-npm/async-validator/-/async-validator-4.0.3.tgz#c8ecd6b28fc8e18b14be4ec7c704641f999d377d"
-  integrity sha512-LVoIbJNHPKsO7FMLamo88uxdrvayGkF3vLTMTeiN3CqAbP3qSafLRc6yx3Sq9lHkiEOLNpoA2jwwnfGDdu1SMQ==
+  resolved "https://registry.nlark.com/async-validator/download/async-validator-4.0.3.tgz#c8ecd6b28fc8e18b14be4ec7c704641f999d377d"
+  integrity sha1-yOzWso/I4YsUvk7HxwRkH5mdN30=
 
 async@^2.6.2:
   version "2.6.3"
