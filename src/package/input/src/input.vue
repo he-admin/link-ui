@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import {ref, computed, onMounted} from 'vue';
+import {ref, computed, watch,onMounted} from 'vue';
 
 import useEmit from '../../../utils/emiter';
 
@@ -91,6 +91,11 @@ export default {
     const input = ref(null);
     const textarea = ref(null);
     const currentValue = ref(props.modelValue);
+    watch(()=>{
+      return props.modelValue
+    },(newVal)=>{
+      currentValue.value = newVal;
+    })
     const showClearIcon = computed(() => {
       return props.clearable && currentValue.value.length
     })

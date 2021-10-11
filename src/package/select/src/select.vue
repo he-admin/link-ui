@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import {ref, computed, provide} from 'vue';
+import {ref, watch, computed, provide, getCurrentInstance} from 'vue';
 import useEmit from '../../../utils/emiter';
 
 export default {
@@ -88,25 +88,48 @@ export default {
   emits: ['update:modelValue', 'change'],
   setup(props, {emit, attrs}) {
     const {on} = useEmit();
+    const options = ref([]);
     // 是否展开下拉框弹出层，之所以定义在这里，因为组件内部后续会涉及到对这个值的更改
     let isOpened = ref(false);
     // 鼠标是否移入select选择框
     let isHover = ref(false);
     const selectedOptions = ref([]);
+
+    // 用来监听modelValue发生变化，（手动点击option和通过外部改变v-model绑定的值情况下）
+    watch(() => {
+      return props.modelValue
+    }, (newVal) => {
+      const selected = [];
+      const arrList = props.multiple ? newVal : [newVal];
+      arrList.forEach(arr => {
+        options.value.forEach(option => {
+          if (option.value === arr) {
+            selected.push(option)
+          }
+        })
+      })
+      selectedOptions.value = selected;
+    })
+
     const selectClasses = computed(() => {
       return ['lku-select', {
         'lku-select--opened': isOpened.value,
         'lku-select--disabled': props.disabled
       }]
     });
+
     const isShowClearIcon = computed(() => {
       return !props.disabled && props.clearable && isHover.value && selectedOptions.value.length !== 0
     })
+
     const lkuIconClasses = computed(() => {
       return ['lku-icon', isShowClearIcon.value ? 'lku-icon-error-circle' : 'lku-icon-arrow-down']
     })
+
     provide('lkuSelected', selectedOptions);
-    provide('modelValue', props.modelValue)
+    provide('modelValue', props.modelValue);
+    provide('lkuSelect', getCurrentInstance().ctx)
+
     /**
      * @method handleSelectClick
      * @description 处理下拉框的点击，控制选项弹出层显示/隐藏
@@ -117,6 +140,7 @@ export default {
       }
       isOpened.value = !isOpened.value;
     }
+
     /**
      * @method handleMouseHover
      * @description 处理鼠标划入划出
@@ -128,6 +152,7 @@ export default {
       }
       isHover.value = isHove;
     }
+
     /**
      * @method handleDelete
      * @description 多选模式下，已选中的删除方法
@@ -141,6 +166,7 @@ export default {
       selectedOptions.value = selectedOptions.value.filter(item => item.value !== option.value)
       changeModelValue();
     }
+
     /**
      * @method handleClear
      * @description 清除全部选中的功能
@@ -157,6 +183,7 @@ export default {
         event.stopPropagation()
       }
     }
+
     const handleDropdownClick = () => {
     }
     /**
@@ -164,6 +191,7 @@ export default {
      * @description 点击option触发的回调函数
      * @param { Object } data
      */
+
     const handleOptionClick = (data) => {
       if (props.multiple) {
         let findIndex = selectedOptions.value.findIndex(item => item.value === data.value);
@@ -178,6 +206,7 @@ export default {
      * @method changeModelValue
      * @description 当selectedOptions发生变化时，同步绑定的v-model值
      */
+
     const changeModelValue = () => {
       let modelValue = selectedOptions.value.map(item => item.value);
       modelValue = props.multiple ? modelValue : modelValue[0];
@@ -187,6 +216,7 @@ export default {
       }
       emit('update:modelValue', modelValue); // vue3 自定义组件新写法
     }
+
     // 监听option组件传递过来的事件
     on('lku-option-select', handleOptionClick);
     // 监听默认选中通过v-model绑定的值
@@ -204,6 +234,13 @@ export default {
       }
 
     })
+
+    // 父组件获取所有子组件
+    const getAllOptions = (option) => {
+      options.value.push(option);
+    }
+
+    // 点击组件外层，关闭弹出层
     const clickOutside = () => {
       if (isOpened.value) {
         isOpened.value = false;
@@ -220,7 +257,8 @@ export default {
       handleSelectClick,
       handleDropdownClick,
       handleMouseHover,
-      clickOutside
+      clickOutside,
+      getAllOptions
     }
   }
 }

@@ -25,6 +25,7 @@ export default {
     const {dispatch} = useEmit();
     const {ctx} = getCurrentInstance();
     const selectedOptions = inject('lkuSelected');
+    const lkuSelect = inject('lkuSelect')
     let isActive = ref(false);
 
     const handleOptionClick = (event) => {
@@ -34,8 +35,13 @@ export default {
       dispatch('lku-option-select', {value: props.value, name: props.label || ctx?.$el?.textContent})
     }
 
-    nextTick(() => {
+    onMounted(() => {
+      // 设置默认勾选
       dispatch('selectDefault', {value: props.value, name: props.label || ctx?.$el?.textContent});
+
+      // 调用父组件方法，将每个组件的option传给父组getCurrentInstance件
+      const {value, $el} = ctx;
+      lkuSelect.getAllOptions({value, name: $el?.textContent})
     })
 
     const optionClasses = computed(() => {
@@ -45,11 +51,8 @@ export default {
         'lku-option--disabled': props.disabled
       }]
     });
+
     return {isActive, optionClasses, handleOptionClick, selectedOptions}
   }
 }
 </script>
-
-<style scoped>
-
-</style>

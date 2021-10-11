@@ -15,8 +15,8 @@
     box-shadow: @primary-shadow-color;
     transition: box-shadow .4s;
   }
-  &:hover:not(:disabled):not(:read-only) {
-    border: 1px solid @primary-border-color;
+  &:hover:not(:disabled):not(:read-only):not(:focus) {
+    border: 1px solid @disabled-text-color;
   }
 }
 
