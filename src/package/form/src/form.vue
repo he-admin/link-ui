@@ -22,6 +22,11 @@ export default {
     labelWidth: {
       type: Number,
       default: 80
+    },
+    labelPosition: {
+      type: String,
+      default: 'right',
+      validator: (val) => ['left', 'right', 'top'].includes(val)
     }
   },
   setup() {
@@ -36,6 +41,29 @@ export default {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
+
+    &__column {
+      flex-direction: column;
+      align-items: normal;
+
+      .lku-form-item__label {
+        margin-bottom: 5px;
+      }
+    }
+
+    &__content {
+     &__error{
+       input{
+         border: 1px solid @danger-color !important;
+         box-shadow: none !important;
+       }
+     }
+    }
+
+    &__error {
+      position: absolute;
+      color: @danger-color;
+    }
 
     &__label {
       float: left;

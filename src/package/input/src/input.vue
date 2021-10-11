@@ -37,6 +37,8 @@
 <script>
 import {ref, computed, onMounted} from 'vue';
 
+import useEmit from '../../../utils/emiter';
+
 export default {
   name: "LkuInput",
   emits: ['update:modelValue', 'change', 'focus', 'blur'],
@@ -85,6 +87,7 @@ export default {
     }
   },
   setup(props, {emit}) {
+    const {dispatch} = useEmit();
     const input = ref(null);
     const textarea = ref(null);
     const currentValue = ref(props.modelValue);
@@ -101,12 +104,14 @@ export default {
       currentValue.value = event?.target?.value;
       emit('update:modelValue', currentValue.value);
       emit('change', currentValue.value);
+      dispatch('onFormItemChange', currentValue.value);
     };
     const handleFocus = (event) => {
-      emit('focus', event)
+      emit('focus', event);
     };
     const handleBlur = (event) => {
-      emit('blur', event)
+      emit('blur', event);
+      dispatch('onFormItemChange', currentValue.value);
     };
     const handleClear = () => {
       currentValue.value = '';

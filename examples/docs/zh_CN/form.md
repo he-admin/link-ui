@@ -4,12 +4,13 @@
 ```html
 <template>
   {{form}}
-  <lku-form :model="form" :rules="rules" :labelWidth="120">
+ {{typeof form.text}}
+  <lku-form :model="form" :rules="rules" :labelWidth="120" labelPosition="left">
     <lku-form-item label="普通文本输入框" prop="text">
       <lku-input v-model="form.text"></lku-input>
     </lku-form-item>
- <lku-form-item label="密码输入框" prop="text">
-      <lku-input v-model="form.text" type="password"></lku-input>
+    <lku-form-item label="密码输入框" prop="password">
+      <lku-input v-model="form.password" type="password"></lku-input>
     </lku-form-item>
   </lku-form>
 </template>
@@ -26,7 +27,7 @@ export default {
       checkbox: ''
     })
    const rules = reactive({
-   text: [{required: true,message: 'text不能为空',trigger:['blur','change']}]
+   text: [{required: true, message: 'text不能为空',trigger:['blur','change']}]
 })
     return {form,rules};
   }
