@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {provide, getCurrentInstance} from 'vue'
+import {reactive, provide, getCurrentInstance} from 'vue'
 
 export default {
   name: "LkuForm",
@@ -29,8 +29,22 @@ export default {
       validator: (val) => ['left', 'right', 'top'].includes(val)
     }
   },
-  setup() {
-    provide('lkuForm', getCurrentInstance())
+  setup(props) {
+    const allFormItems = reactive([]);
+    const cacheFormItem = (formItem) => {
+      allFormItems.push(formItem);
+      console.log(allFormItems);
+    }
+    // 重置多个FormItem的值,通过父组件依次调用每个子组件FormItem的resetField方法
+    const resetFields = () => {
+       console.log('resetFields');
+       //emit('update')
+      allFormItems.forEach(formItem => {
+        formItem.resetFiled();
+      })
+    }
+    provide('lkuForm', getCurrentInstance());
+    return {cacheFormItem, allFormItems, resetFields}
   }
 }
 </script>
@@ -52,17 +66,18 @@ export default {
     }
 
     &__content {
-     &__error{
-       input{
-         border: 1px solid @danger-color !important;
-         box-shadow: none !important;
-       }
-     }
+      &__error {
+        input {
+          border: 1px solid @danger-color !important;
+          box-shadow: none !important;
+        }
+      }
     }
 
     &__error {
       position: absolute;
       color: @danger-color;
+      font-size: 12px;
     }
 
     &__label {

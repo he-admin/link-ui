@@ -3,7 +3,9 @@
 :::demo
 ```html
 <template>
+   {{value}}
   <lku-input v-model="value" placeholder="请输入用户名"></lku-input>
+  <button @click="value=1234">点我</button>
 </template>
 
 <script>

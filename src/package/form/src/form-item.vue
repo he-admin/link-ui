@@ -5,16 +5,16 @@
     </label>
     <div :class="['lku-form-item__content',{'lku-form-item__content__error':isShowError}]">
       <slot></slot>
-      {{validateMessage}}validate
+      {{ validateMessage }}validate
       <p class="lku-form-item__error" v-if="isShowError">
-        {{validateMessage}}
+        {{ validateMessage }}
       </p>
     </div>
   </div>
 </template>
 
 <script>
-import {ref, computed, inject} from 'vue';
+import {ref, computed, inject, getCurrentInstance} from 'vue';
 import useEmit from '../../../utils/emiter';
 import Schema from 'async-validator'
 
@@ -36,8 +36,13 @@ export default {
   },
   setup(props) {
     const {on} = useEmit();
-    const lkuForm = inject('lkuForm').props;
-    const isShowError = computed(()=>{
+    const lkuForm = inject('lkuForm').ctx;
+
+    // 缓存原始数据
+    const originFiledData = lkuForm.model[props.prop];
+    // 子组件调用父亲的缓存方法
+    lkuForm.cacheFormItem(getCurrentInstance().ctx);
+    const isShowError = computed(() => {
       return validateMessage.value !== ''
     })
     let validateMessage = ref('');
@@ -85,29 +90,39 @@ export default {
       validator.validate(sourceValue, (error) => {
         console.log(error);
         // 若校验通过，回调函数error参数是null，否则是 [{filed:'', message:'', filedValue: ''}]
-        if(error){
-           validateMessage.value = error[0].message;
-           console.log(error);
-        }else{
+        if (error) {
+          validateMessage.value = error[0].message;
+          console.log(error);
+        } else {
           validateMessage.value = ''
         }
       })
     }
     const onFiledChange = () => {
-     validate();
+      validate();
     };
     const onFiledBlur = () => {
 
       if (formItemRules) {
 
       }
+    };
+    /**
+     * @method resetFiled
+     * @description 重置当前FormItem的值和校验提醒，注意是重置不是清空
+     */
+    const resetFiled = () => {
+      validateMessage.value = '';
+      // 注意这里采用了一个小技巧是，因为model值是引用数据类型，所以子组件可以直接修改父组件的props，且同步数据
+      lkuForm.model[props.prop] = originFiledData;
     }
     on('onFormItemChange', onFiledChange);
     on('onFormItemBlur', onFiledBlur)
     return {
-      isShowError,validateMessage,
+      isShowError, validateMessage,
       formItemClasses,
-      labelClasses, labelStyle
+      labelClasses, labelStyle,
+      resetFiled
     }
   }
 }
