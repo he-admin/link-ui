@@ -1,0 +1,53 @@
+.lku-form {
+  &-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    &__column {
+      flex-direction: column;
+      align-items: normal;
+
+      .lku-form-item__label {
+        margin-bottom: 5px;
+      }
+    }
+
+    &__content {
+      &__error {
+        input, .lku-select__inner {
+          border: 1px solid @danger-color !important;
+          box-shadow: none !important;
+        }
+      }
+    }
+
+    &__error {
+      position: absolute;
+      padding-top: 2px;
+      color: @danger-color;
+      font-size: 12px;
+    }
+
+    &__label {
+      float: left;
+      padding-right: 10px;
+    }
+
+    &__required {
+      position: relative;
+
+      &:before {
+        content: "*";
+        display: inline-block;
+        color: @danger-color;
+        font-size: 16px;
+        height: 16px;
+        padding-right: 4px;
+        vertical-align: middle;
+        text-align: center;
+        line-height: 20px;
+      }
+    }
+  }
+}

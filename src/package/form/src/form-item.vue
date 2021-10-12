@@ -5,7 +5,6 @@
     </label>
     <div :class="['lku-form-item__content',{'lku-form-item__content__error':isShowError}]">
       <slot></slot>
-      {{ validateMessage }}
       <p class="lku-form-item__error" v-if="isShowError">
         {{ validateMessage }}
       </p>
@@ -60,7 +59,6 @@ export default {
     })
     const labelStyle = computed(() => {
       let style = {};
-      console.log(lkuForm.labelWidth);
       if (lkuForm.labelWidth) {
         style.width = `${lkuForm.labelWidth}px`;
       }
@@ -70,20 +68,23 @@ export default {
       style.textAlign = lkuForm.labelPosition;
       return style
     })
+
     // 获取当前item的rules
     const formItemRules = computed(() => {
       const {rules} = lkuForm;
       return (rules && rules[props.prop]) || []
     }).value;
-    console.log(formItemRules);
+
     // 获取当前item设置的change事件 rule
     const rulesOfChange = computed(() => {
       return formItemRules.filter(rule => rule?.trigger?.includes('change'))
     })
+
     // 获取当前item设置的blur事件 rule
     const rulesOfBlur = computed(() => {
       return formItemRules.filter(rule => rule?.trigger?.include('blur'))
     })
+
     const validate = (rules, callback) => {
       // 设置要检验的规则和需要被校验的值
       const descriptor = {[props.prop]: rules || formItemRules};
@@ -102,19 +103,23 @@ export default {
         }
       })
     }
+
+    // 监听校验规则中有change事件
     const onFiledChange = () => {
-      console.log(rulesOfChange.value);
       if (!rulesOfChange.value.length) {
         return
       }
       validate(rulesOfChange.value);
     };
+
+    // 监听校验规则中有blur事件
     const onFiledBlur = () => {
       if (!rulesOfBlur.length) {
         return
       }
       validate(rulesOfBlur)
     };
+
     /**
      * @method resetFiled
      * @description 重置当前FormItem的值和校验提醒，注意是重置不是清空
@@ -124,6 +129,7 @@ export default {
       // 注意这里采用了一个小技巧是，因为model值是引用数据类型，所以子组件可以直接修改父组件的props，且同步数据
       lkuForm.model[props.prop] = originFiledData;
     }
+
     on('onFormItemChange', onFiledChange);
     on('onFormItemBlur', onFiledBlur)
     return {
@@ -136,7 +142,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less">
-
-</style>

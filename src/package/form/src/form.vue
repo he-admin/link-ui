@@ -6,7 +6,7 @@
 
 <script>
 import {reactive, provide, getCurrentInstance} from 'vue'
-import {isFunction} from '../../../utils/utils';
+import {isFunction} from '@/utils/utils';
 
 export default {
   name: "LkuForm",
@@ -35,14 +35,22 @@ export default {
     provide('lkuForm', getCurrentInstance());
     const cacheFormItem = (formItem) => {
       allFormItems.push(formItem);
-      console.log(allFormItems);
     }
+
     // 重置多个FormItem的值,通过父组件依次调用每个子组件FormItem的resetField方法
     const resetFields = () => {
       allFormItems.forEach(formItem => {
         formItem.resetFiled();
       })
     }
+
+    /**
+     * @method validateFormItems
+     * @description 验证所有的form-item是否符合校验规则
+     * @param { Array } formItems
+     * @param { Function } successCb
+     * @param { Function } errorCb
+     */
     const validateFormItems = (formItems, successCb, errorCb) => {
       try {
         let isValid = true;
@@ -50,6 +58,7 @@ export default {
           item.validate(null, (error) => {
             // 说明validateMessage参数未校验通过
             if (error) {
+              // 只要有一个未校验通过，表单验证就不通过
               isValid = false;
             }
           })
@@ -63,66 +72,13 @@ export default {
         }
       }
     };
-    const validate = (successCb,errorCb) => {
-      validateFormItems(allFormItems,successCb,errorCb);
+    const validate = (successCb, errorCb) => {
+      validateFormItems(allFormItems, successCb, errorCb);
     }
-    return {cacheFormItem, allFormItems, resetFields, validateFormItems,validate}
+    return {
+      cacheFormItem, resetFields,
+      validateFormItems, validate
+    }
   }
 }
 </script>
-
-<style lang="less">
-.lku-form {
-  &-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-
-    &__column {
-      flex-direction: column;
-      align-items: normal;
-
-      .lku-form-item__label {
-        margin-bottom: 5px;
-      }
-    }
-
-    &__content {
-      &__error {
-        input {
-          border: 1px solid @danger-color !important;
-          box-shadow: none !important;
-        }
-      }
-    }
-
-    &__error {
-      position: absolute;
-      padding-top: 2px;
-      color: @danger-color;
-      font-size: 12px;
-    }
-
-    &__label {
-      float: left;
-      padding-right: 10px;
-    }
-
-    &__required {
-      position: relative;
-
-      &:before {
-        content: "*";
-        display: inline-block;
-        color: @danger-color;
-        font-size: 16px;
-        height: 16px;
-        padding-right: 4px;
-        vertical-align: middle;
-        text-align: center;
-        line-height: 20px;
-      }
-    }
-  }
-}
-</style>

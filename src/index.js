@@ -4,6 +4,7 @@ import './styles/components/switch.less';
 import './styles/components/radio.less';
 import './styles/components/checkbox.less';
 import './styles/components/input.less';
+import './styles/components/form.less';
 
 
 import {LkuSelect, LkuOptionGroup, LkuOption} from './package/select'
