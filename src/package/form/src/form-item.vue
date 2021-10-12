@@ -5,7 +5,7 @@
     </label>
     <div :class="['lku-form-item__content',{'lku-form-item__content__error':isShowError}]">
       <slot></slot>
-      {{ validateMessage }}validate
+      {{ validateMessage }}
       <p class="lku-form-item__error" v-if="isShowError">
         {{ validateMessage }}
       </p>
@@ -16,7 +16,8 @@
 <script>
 import {ref, computed, inject, getCurrentInstance} from 'vue';
 import useEmit from '../../../utils/emiter';
-import Schema from 'async-validator'
+import Schema from 'async-validator';
+import {isFunction} from '../../../utils/utils';
 
 const FORM_ITEM = 'lku-form-item';
 export default {
@@ -74,38 +75,45 @@ export default {
       const {rules} = lkuForm;
       return (rules && rules[props.prop]) || []
     }).value;
+    console.log(formItemRules);
     // 获取当前item设置的change事件 rule
     const rulesOfChange = computed(() => {
-      return formItemRules.filter(rule => rule.trigger && rule.trigger === 'change')
+      return formItemRules.filter(rule => rule?.trigger?.includes('change'))
     })
     // 获取当前item设置的blur事件 rule
     const rulesOfBlur = computed(() => {
-      return formItemRules.filter(rule => rule.trigger && rule.trigger === 'blur')
+      return formItemRules.filter(rule => rule?.trigger?.include('blur'))
     })
-    const validate = () => {
+    const validate = (rules, callback) => {
       // 设置要检验的规则和需要被校验的值
-      const descriptor = {[props.prop]: formItemRules};
+      const descriptor = {[props.prop]: rules || formItemRules};
       const sourceValue = {[props.prop]: lkuForm.model[props.prop]};
       const validator = new Schema(descriptor);
-      validator.validate(sourceValue, (error) => {
-        console.log(error);
+      validator.validate(sourceValue, (error, fields) => {
         // 若校验通过，回调函数error参数是null，否则是 [{filed:'', message:'', filedValue: ''}]
         if (error) {
           validateMessage.value = error[0].message;
-          console.log(error);
         } else {
           validateMessage.value = ''
+        }
+        // 自定义回调函数，当调用validate方法，传入的回调函数的参数的值就是validateMessage
+        if (isFunction(callback)) {
+          callback(validateMessage.value)
         }
       })
     }
     const onFiledChange = () => {
-      validate();
+      console.log(rulesOfChange.value);
+      if (!rulesOfChange.value.length) {
+        return
+      }
+      validate(rulesOfChange.value);
     };
     const onFiledBlur = () => {
-
-      if (formItemRules) {
-
+      if (!rulesOfBlur.length) {
+        return
       }
+      validate(rulesOfBlur)
     };
     /**
      * @method resetFiled
@@ -122,6 +130,7 @@ export default {
       isShowError, validateMessage,
       formItemClasses,
       labelClasses, labelStyle,
+      validate,
       resetFiled
     }
   }

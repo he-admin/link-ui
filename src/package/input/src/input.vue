@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import {ref, computed, watch,onMounted} from 'vue';
+import {ref, computed, watch, onMounted} from 'vue';
 
 import useEmit from '../../../utils/emiter';
 
@@ -67,7 +67,7 @@ export default {
     type: {
       type: String,
       default: 'text',
-      validator: (val) => ['text', 'textarea',].includes(val)
+      validator: (val) => ['text', 'textarea', 'password'].includes(val)
     },
     rows: {
       type: Number,
@@ -91,9 +91,9 @@ export default {
     const input = ref(null);
     const textarea = ref(null);
     const currentValue = ref(props.modelValue);
-    watch(()=>{
+    watch(() => {
       return props.modelValue
-    },(newVal)=>{
+    }, (newVal) => {
       currentValue.value = newVal;
     })
     const showClearIcon = computed(() => {

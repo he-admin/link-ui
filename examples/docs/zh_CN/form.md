@@ -12,13 +12,14 @@
       <lku-input v-model="form.password" type="password"></lku-input>
     </lku-form-item>
      <lku-form-item label="下拉框" prop="select">
-      <lku-select v-model="form.select" :width="200">
+      <lku-select v-model="form.select" :width="200" multiple>
         <lku-option :value="1">苹果</lku-option>
        <lku-option :value="2">香蕉</lku-option>
       </lku-select>
        </lku-form-item>
   </lku-form>
    <button @click="lkuForm.resetFields()">重置</button>
+    <button @click="handleSubmit">提交</button>
 </template>
 <script>
 import {ref,reactive} from 'vue'
@@ -29,11 +30,16 @@ export default {
 return {
    form:{text: '初始值',
                password: '',
-               select: 1,
+               select: [1],
                radio: '',
                checkbox: ''}
 }},
   setup() {
+const handleSubmit = ()=>{
+  lkuForm.value.validate(res=>{
+   console.log(res);
+},(error)=>{console.log(error)})
+}
     const form2 = reactive({
       text: '初始值',
       password: '',
@@ -54,7 +60,7 @@ callback();
 }}],
    select: [{required: true,message: '至少选择一个'}]
 })
-    return {lkuForm,form2,rules};
+    return {lkuForm,form2,rules,handleSubmit};
   }
 
 }

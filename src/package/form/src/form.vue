@@ -6,6 +6,7 @@
 
 <script>
 import {reactive, provide, getCurrentInstance} from 'vue'
+import {isFunction} from '../../../utils/utils';
 
 export default {
   name: "LkuForm",
@@ -31,20 +32,41 @@ export default {
   },
   setup(props) {
     const allFormItems = reactive([]);
+    provide('lkuForm', getCurrentInstance());
     const cacheFormItem = (formItem) => {
       allFormItems.push(formItem);
       console.log(allFormItems);
     }
     // 重置多个FormItem的值,通过父组件依次调用每个子组件FormItem的resetField方法
     const resetFields = () => {
-       console.log('resetFields');
-       //emit('update')
       allFormItems.forEach(formItem => {
         formItem.resetFiled();
       })
     }
-    provide('lkuForm', getCurrentInstance());
-    return {cacheFormItem, allFormItems, resetFields}
+    const validateFormItems = (formItems, successCb, errorCb) => {
+      try {
+        let isValid = true;
+        formItems.forEach(item => {
+          item.validate(null, (error) => {
+            // 说明validateMessage参数未校验通过
+            if (error) {
+              isValid = false;
+            }
+          })
+        })
+        if (isFunction(successCb)) {
+          successCb(isValid)
+        }
+      } catch (error) {
+        if (isFunction(errorCb)) {
+          errorCb(error)
+        }
+      }
+    };
+    const validate = (successCb,errorCb) => {
+      validateFormItems(allFormItems,successCb,errorCb);
+    }
+    return {cacheFormItem, allFormItems, resetFields, validateFormItems,validate}
   }
 }
 </script>
@@ -76,6 +98,7 @@ export default {
 
     &__error {
       position: absolute;
+      padding-top: 2px;
       color: @danger-color;
       font-size: 12px;
     }
