@@ -18,10 +18,11 @@ import {LkuRadio, LkuRadioGroup} from './package/radio/index';
 import LkuInput from './package/input/index';
 import {LkuForm, LkuFormItem} from './package/form/index';
 import LkuButton from './package/button/index';
+import LkuIcon from './package/icon/index';
 
 const components = [LkuSelect, LkuOptionGroup, LkuOption, LkuMenu, LkuMenuGroup,
   LkuMenuItem, LkuCollapseTransition, LkuSwitch, LkuCheckbox, LkuCheckboxGroup,
-  LkuRadio, LkuRadioGroup, LkuInput, LkuForm, LkuFormItem, LkuButton];
+  LkuRadio, LkuRadioGroup, LkuInput, LkuForm, LkuFormItem, LkuButton, LkuIcon];
 
 const install = (Vue) => {
   components.forEach((component) => {
@@ -48,5 +49,6 @@ export default {
   LkuRadio, LkuRadioGroup,
   LkuInput,
   LkuForm, LkuFormItem,
-  LkuButton
+  LkuButton,
+  LkuIcon
 }

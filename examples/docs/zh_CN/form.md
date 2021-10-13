@@ -58,8 +58,10 @@
       </lku-input>
     </lku-form-item>
   </lku-form>
-  <button @click="lkuForm.resetFields()">重置</button>
-  <button @click="handleSubmit">提交</button>
+  <div style="display: flex;justify-content: center">
+   <lku-button @click="lkuForm.resetFields()">重置</lku-button>
+    <lku-button type="primary" @click="handleSubmit">提交</lku-button>
+</div>
 </template>
 <script>
 import {ref, reactive} from 'vue'
