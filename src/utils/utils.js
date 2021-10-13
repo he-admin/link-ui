@@ -6,10 +6,6 @@ const checkType = (type) => function (val) {
 
 const isArray = checkType('Array');
 const isFunction = checkType('Function');
-
-const arr = new URLSearchParams('test=1&a=2&test=2');
-console.log(arr.entries());
-
 export {
   isArray,
   isFunction

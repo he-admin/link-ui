@@ -52,6 +52,11 @@
         <lku-radio label="3">选项C</lku-radio>
       </lku-radio-group>
     </lku-form-item>
+
+    <lku-form-item label="文本输入框" prop="textarea">
+      <lku-input v-model="form.textarea" type="textarea" :width="360" :rows="4">
+      </lku-input>
+    </lku-form-item>
   </lku-form>
   <button @click="lkuForm.resetFields()">重置</button>
   <button @click="handleSubmit">提交</button>
@@ -70,7 +75,8 @@ export default {
         radio: '1',
         checkbox: [],
         agree: true,
-        switch: true
+        switch: true,
+        textarea: ''
       }
     }
   },
@@ -97,7 +103,16 @@ export default {
 
       }],
       checkbox: [{type: 'array', required: true, message: '复选框至少选一个', min: 1}],
-      select: [{required: true, message: '单选框必填', min: 1}],
+      agree: [{
+        type: 'boolean', required: true, validator: (rule, value, callback) => {
+          if (value) {
+            callback()
+          } else {
+            callback(new Error('同意协议必填'))
+          }
+        }
+      }],
+      select: [{type: 'number', required: true, message: '单选框必填'}],
       mulSelect: [{type: 'array', required: true, message: '至少选择两个', min: 2}]
     })
     return {lkuForm, form2, rules, handleSubmit};

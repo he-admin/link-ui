@@ -36,7 +36,7 @@ export default [{
         type: 'component',
         title: 'Button按钮'
       },
-      component: () => import('../docs/zh_CN/menu.md')
+      component: () => import('../docs/zh_CN/button.md')
     }
   ]
 }]

@@ -37,14 +37,6 @@ export default {
   setup(props) {
     const {on} = useEmit();
     const lkuForm = inject('lkuForm').ctx;
-
-    // 缓存原始数据
-    const originFiledData = lkuForm.model[props.prop];
-    // 子组件调用父亲的缓存方法
-    lkuForm.cacheFormItem(getCurrentInstance().ctx);
-    const isShowError = computed(() => {
-      return validateMessage.value !== ''
-    })
     let validateMessage = ref('');
     const formItemClasses = computed(() => {
       return [FORM_ITEM, {
@@ -68,6 +60,22 @@ export default {
       style.textAlign = lkuForm.labelPosition;
       return style
     })
+
+    let originFiledData = '';
+    let isShowError = false;
+    // 必须配置prop属性之后，才对数据进行缓存和校验，虽然prop是必填项
+    if (props.prop) {
+      // 缓存原始数据
+      originFiledData = lkuForm.model[props.prop];
+      // 子组件调用父亲的缓存方法
+
+      lkuForm.cacheFormItem(getCurrentInstance().ctx);
+      isShowError = computed(() => {
+        return validateMessage.value !== ''
+      })
+      on('onFormItemChange', onFiledChange);
+      on('onFormItemBlur', onFiledBlur)
+    }
 
     // 获取当前item的rules
     const formItemRules = computed(() => {
@@ -117,7 +125,7 @@ export default {
       if (!rulesOfBlur.length) {
         return
       }
-      validate(rulesOfBlur)
+      validate(rulesOfBlur.value)
     };
 
     /**
@@ -126,12 +134,9 @@ export default {
      */
     const resetFiled = () => {
       validateMessage.value = '';
-      // 注意这里采用了一个小技巧是，因为model值是引用数据类型，所以子组件可以直接修改父组件的props，且同步数据
+      // 注意这里采用了一个小技巧是，因为model值是引用数据类型，所以子组件可以直接修改父组件的props，达到同步数据效果
       lkuForm.model[props.prop] = originFiledData;
     }
-
-    on('onFormItemChange', onFiledChange);
-    on('onFormItemBlur', onFiledBlur)
     return {
       isShowError, validateMessage,
       formItemClasses,
