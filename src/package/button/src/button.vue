@@ -1,5 +1,5 @@
 <template>
-  <div class="lku-button-wrapper">
+  <div class="lku-button-wrapper" :style="{display: block ? 'block' : 'inline-block'}">
     <button @click="handleClick"
             :class="['lku-button',{
      'lku-button__primary': type === 'primary',
@@ -52,6 +52,11 @@ export default {
     target: {
       type: String,
       default: '_self'
+    },
+    // 是否以块级形式展示，宽度等于父级元素
+    block: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, {emit}) {
@@ -80,7 +85,6 @@ export default {
 }
 
 .lku-button-wrapper {
-  display: inline-block;
   margin-right: 8px;
   margin-bottom: 12px;
 
