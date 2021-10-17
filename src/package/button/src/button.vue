@@ -79,14 +79,16 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .button-opacity {
   opacity: .8;
 }
 
+.lku-button-wrapper + .lku-button-wrapper {
+  margin-left: 10px;
+}
+
 .lku-button-wrapper {
-  margin-right: 8px;
-  margin-bottom: 12px;
 
   .lku-button {
     display: flex;
@@ -176,5 +178,6 @@ export default {
       opacity: .5;
     }
   }
+
 }
 </style>

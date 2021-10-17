@@ -21,13 +21,13 @@ export default [{
       component: () => import('../docs/zh_CN/menu.md')
     },
     {
-      path: '/component/form',
-      name: 'Form',
+      path: '/component/drawer',
+      name: 'Drawer',
       meta: {
         type: 'component',
-        title: 'Form表单'
+        title: 'Drawer抽屉'
       },
-      component: () => import('../docs/zh_CN/menu.md')
+      component: () => import('../docs/zh_CN/drawer.md')
     },
     {
       path: '/component/button',
