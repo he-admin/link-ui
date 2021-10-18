@@ -6,7 +6,7 @@
 
 <script>
 import {reactive, provide, getCurrentInstance} from 'vue'
-import {isFunction} from '@/utils/utils';
+import {isFunction} from '@/utils/tools';
 
 export default {
   name: "LkuForm",

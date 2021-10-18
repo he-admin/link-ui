@@ -16,7 +16,7 @@
 import {ref, computed, inject, getCurrentInstance} from 'vue';
 import useEmit from '../../../utils/emiter';
 import Schema from 'async-validator';
-import {isFunction} from '../../../utils/utils';
+import {isFunction} from '../../../utils/tools';
 
 const FORM_ITEM = 'lku-form-item';
 export default {
@@ -107,7 +107,7 @@ export default {
         }
         // 自定义回调函数，当调用validate方法，传入的回调函数的参数的值就是validateMessage
         if (isFunction(callback)) {
-          callback(validateMessage.value)
+          callback(validateMessage.value);
         }
       })
     }

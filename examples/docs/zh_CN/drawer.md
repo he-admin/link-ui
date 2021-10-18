@@ -4,7 +4,8 @@
 ```html
 <template>
  <button @click="open">点我打开弹窗</button>
-<lku-drawer v-model:visible="visible">
+//考虑500  '500', '500px' '15%'的情况
+<lku-drawer v-model:visible="visible" size="500">
 <template v-slot:foot>
  <lku-button>取消</lku-button>
  <lku-button type="primary">确定</lku-button>

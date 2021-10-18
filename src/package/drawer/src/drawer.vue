@@ -1,11 +1,11 @@
 <template>
-  <div :class="drawerClasses" >
+  <div :class="drawerClasses">
     <!--    阴影遮罩层-->
     <div class="lku-drawer__mask" v-if="visible">
     </div>
-    <transition name="drawer-right">
+    <transition :name="`drawer-${direction}`" @enter="transitionEnter" @leave="transitionLeave">
       <!--    抽屉主体-->
-      <div class="lku-drawer__main" v-if="visible">
+      <div class="lku-drawer__main" v-if="visible" :style="mainStyle">
         <!--      head-->
         <div class="lku-drawer__head">
           <h1 class="lku-drawer__title">
@@ -34,6 +34,7 @@
 
 <script>
 import {ref, computed} from 'vue';
+import {formatSize} from '../../../utils/tools';
 
 export default {
   name: "LkuDrawer",
@@ -45,6 +46,15 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    direction: {
+      type: String,
+      default: 'right',
+      validator: (val) => ['left', 'right', 'top', 'bottom'].includes(val)
+    },
+    size: {
+      type: [Number, String],
+      default: 200
     }
   },
   setup(props, {emit}) {
@@ -52,16 +62,34 @@ export default {
       const prefix = 'lku-drawer';
       return [prefix, {}]
     });
+    const width = computed(() => {
+      return formatSize(props.size)
+    })
+    const mainStyle = computed(() => {
+      const placementMaps = {
+        left: {left: 0, top: 0, bottom: 0, width: width.value},
+        right: {right: 0, top: 0, bottom: 0, width: width.value},
+        top: {top: 0, left: 0, right: 0, height: width.value},
+        bottom: {bottom: 0, left: 0, right: 0, height: width.value}
+      };
+      return placementMaps[props.direction] || {}
+
+    });
     const handleClose = () => {
       emit('update:visible', false);
     };
-
-    return {drawerClasses, handleClose}
+    const transitionEnter = (el, done) => {
+      el.style.transition = 'transform .3s ease'
+    };
+    const transitionLeave = (el, done) => {
+      el.style.transition = 'transform .3s ease'
+    };
+    return {drawerClasses, mainStyle, handleClose, transitionEnter, transitionLeave}
   }
 }
 </script>
 
-<style lang="less" >
+<style lang="less">
 @lku-drawer-index: 999;
 .lku-drawer {
   .lku-drawer__mask {
@@ -80,10 +108,9 @@ export default {
     position: fixed;
     display: flex;
     flex-direction: column;
-    left: 0;
-    top: 0; // top和bottom都为0,相当于实现高度100%
-    bottom: 0;
-    width: 300px;
+    //left: 0;
+    //top: 0; // top和bottom都为0,相当于实现高度100%
+    //bottom: 0;
     background-color: @white-color;
     z-index: @lku-drawer-index;
     box-shadow: 0 0 6px #cecece;
@@ -121,7 +148,7 @@ export default {
 
     .lku-drawer__foot {
       display: flex;
-      justify-content: right;
+      justify-content: flex-end;
       padding: 18px 20px;
       border-top: 1px solid @base-border-color;
     }
@@ -129,16 +156,32 @@ export default {
 }
 
 /*抽屉*/
-.drawer-right-enter-active,
-.drawer-right-leave-active {
-  transition: transform .3s ease;
-}
-//.drawer-left-enter-from,
-//.drawer-left-leave-to {
-//  transform: translateX(100%);
+//.drawer-right-enter-active,
+//.drawer-right-leave-active {
+//  transition: transform .3s ease;
 //}
+
+// 左侧弹出
+.drawer-left-enter-from,
+.drawer-left-leave-to {
+  transform: translateX(-100%);
+}
+
+// 右侧弹出
 .drawer-right-enter-from,
 .drawer-right-leave-to {
-  transform: translateX(-100%);
+  transform: translateX(100%);
+}
+
+// 上面弹出
+.drawer-top-enter-from,
+.drawer-top-leave-to {
+  transform: translateY(-100%);
+}
+
+// 下面弹出
+.drawer-bottom-enter-from,
+.drawer-bottom-leave-to {
+  transform: translateY(100%);
 }
 </style>
