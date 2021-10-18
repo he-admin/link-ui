@@ -74,3 +74,23 @@ export function getStyle(dom) {
   }
   return getComputedStyle(dom) // 非ie浏览，火狐、谷歌等
 }
+
+/**
+ * @method hasClass
+ * @description
+ * @param { NodeObject }
+ * @param { String } className
+ * @returns { Boolean }
+ */
+export function getBrowserWidth() {
+  if (document.body.clientWidth) {
+    return {
+      clientWidth: document.body.clientWidth,
+      clientHeight: document.body.clientHeight
+    };
+  }
+  return {
+    clientWidth: document.documentElement.clientWidth,
+    clientHeight: document.documentElement.clientHeight
+  };
+}

@@ -1,8 +1,10 @@
 <template>
   <div :class="drawerClasses">
     <!--    阴影遮罩层-->
-    <div class="lku-drawer__mask" v-if="visible">
-    </div>
+    <transition name="drawer-mask">
+      <div class="lku-drawer__mask" v-if="visible">
+      </div>
+    </transition>
     <transition :name="`drawer-${direction}`" @enter="transitionEnter" @leave="transitionLeave">
       <!--    抽屉主体-->
       <div class="lku-drawer__main" v-if="visible" :style="mainStyle">
@@ -34,7 +36,8 @@
 
 <script>
 import {ref, computed} from 'vue';
-import {formatSize} from '../../../utils/tools';
+import {formatSize} from '@/utils/tools';
+import {getBrowserWidth} from '@/utils/dom';
 
 export default {
   name: "LkuDrawer",
@@ -153,6 +156,15 @@ export default {
       border-top: 1px solid @base-border-color;
     }
   }
+}
+
+/*蒙层动画*/
+.drawer-mask-enter-active, .drawer-mask-leave-active {
+  transition: opacity .5s ease-in-out;
+}
+
+.drawer-mask-enter-from, .drawer-mask-leave-to {
+  opacity: 0;
 }
 
 /*抽屉*/

@@ -11,13 +11,7 @@ const isString = checkType('String');
 
 // 处理传入的数字或者字符串百分比,考虑500  '500', '500px' '15%'的情况
 const formatSize = (val) => {
-  let value;
-  if (isString(val)) {
-    value = val.includes('%') ? val : isNumber(Number(val)) ? `${val}px` : val;
-  } else {
-    value = `${val}px`
-  }
-  return value;
+  return isNaN(Number(val)) ? val : `${val}px`;
 }
 
 export {
