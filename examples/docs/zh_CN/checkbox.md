@@ -13,7 +13,7 @@
   </lku-checkbox>
   <div style="margin: 8px 0">半选状态：{{ indeterminate }}</div>
   <lku-checkbox-group v-model="list" @change="handleGroupChange">
-    <lku-checkbox label="a">选项一</lku-checkbox>
+    <lku-checkbox label="a" disabled>选项一</lku-checkbox>
     <lku-checkbox label="b">选项二</lku-checkbox>
     <lku-checkbox label="c">选项三</lku-checkbox>
     <lku-checkbox label="d">选项四</lku-checkbox>

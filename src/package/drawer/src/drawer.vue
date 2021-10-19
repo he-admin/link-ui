@@ -2,7 +2,7 @@
   <div :class="drawerClasses">
     <!--    阴影遮罩层-->
     <transition name="drawer-mask">
-      <div class="lku-drawer__mask" v-if="visible">
+      <div class="lku-drawer__mask" v-if="visible" @click="handleClickMask">
       </div>
     </transition>
     <transition :name="`drawer-${direction}`" @enter="transitionEnter" @leave="transitionLeave">
@@ -20,7 +20,14 @@
 
           </i>
         </div>
-
+        <!--        drag按钮-->
+        <span class="lku-drawer__drag" v-if="draggable">
+          <slot name="drag">
+             <i class="mku-drawer__drag-btn">
+               
+             </i>
+          </slot>
+        </span>
         <!--      内容-->
         <div class="lku-drawer__content">
           <slot>内容主体1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</slot>
@@ -58,6 +65,16 @@ export default {
     size: {
       type: [Number, String],
       default: 200
+    },
+    // 是否点击蒙层可以关闭抽屉
+    maskClosable: {
+      type: Boolean,
+      default: true
+    },
+    // 是否可拖拽改变抽屉尺寸
+    draggable: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, {emit}) {
@@ -80,14 +97,25 @@ export default {
     });
     const handleClose = () => {
       emit('update:visible', false);
+      emit('close');
     };
+    const handleClickMask = () => {
+      if (!props.maskClosable) {
+        return;
+      }
+      handleClose();
+    }
     const transitionEnter = (el, done) => {
       el.style.transition = 'transform .3s ease'
     };
     const transitionLeave = (el, done) => {
       el.style.transition = 'transform .3s ease'
     };
-    return {drawerClasses, mainStyle, handleClose, transitionEnter, transitionLeave}
+    return {
+      drawerClasses, mainStyle,
+      handleClose, handleClickMask,
+      transitionEnter, transitionLeave
+    }
   }
 }
 </script>
