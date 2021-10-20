@@ -21,10 +21,12 @@
           </i>
         </div>
         <!--        drag按钮-->
-        <span class="lku-drawer__drag" v-if="draggable">
+        <span class="lku-drawer__drag"
+              v-if="draggable"
+              @mousedown="handleMouseDown"
+              @mouseup="handleMouseUp">
           <slot name="drag">
-             <i class="mku-drawer__drag-btn">
-               
+             <i class="lku-drawer__drag-btn">
              </i>
           </slot>
         </span>
@@ -74,13 +76,20 @@ export default {
     // 是否可拖拽改变抽屉尺寸
     draggable: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
   setup(props, {emit}) {
+    const canDrag = ref(false);
     const drawerClasses = computed(() => {
       const prefix = 'lku-drawer';
-      return [prefix, {}]
+      const dir = props.direction;
+      return [prefix, {
+        [`${prefix}__left`]: dir === 'left',
+        [`${prefix}__right`]: dir === 'right',
+        [`${prefix}__top`]: dir === 'top',
+        [`${prefix}__bottom`]: dir === 'bottom'
+      }]
     });
     const width = computed(() => {
       return formatSize(props.size)
@@ -111,10 +120,52 @@ export default {
     const transitionLeave = (el, done) => {
       el.style.transition = 'transform .3s ease'
     };
+    // 鼠标按钮按下去事件
+    const handleMouseDown = () => {
+      console.log('handleMouseDown');
+      if (!props.draggable) {
+        return
+      }
+      canDrag.value = true;
+    };
+    // 鼠标按钮松开事件
+    const handleMouseUp = () => {
+      console.log('handleMouseUp');
+    };
+    // 鼠标移动
+    const handleMouseMove = (event) => {
+      if (!props.draggable || !canDrag.value) {
+        return
+      }
+      const movedWidth = calcMoveWidth(event);
+      width.value = `${movedWidth}px`;
+    }
+    const calcMoveWidth = (event) => {
+      const {clientWidth, clientHeight} = getBrowserWidth();
+      let size = 0;
+      switch (props.direction) {
+        case 'left':
+          size = event.pageX;
+          break;
+        case 'right':
+          size = clientWidth - event.pageX;
+          break;
+        case 'top':
+          size = event.pageY;
+          break;
+        case 'bottom':
+          size = clientHeight - event.pageY;
+          break;
+        default:
+          return
+      }
+      return size;
+    }
     return {
       drawerClasses, mainStyle,
       handleClose, handleClickMask,
-      transitionEnter, transitionLeave
+      transitionEnter, transitionLeave,
+      handleMouseDown, handleMouseUp
     }
   }
 }
@@ -177,6 +228,18 @@ export default {
       padding: 20px;
     }
 
+    .lku-drawer__drag {
+      position: absolute;
+
+      &-btn {
+        display: inline-block;
+        width: 12px;
+        height: 60px;
+        border: 1px solid @base-border-color;
+        border-radius: 6px;
+      }
+    }
+
     .lku-drawer__foot {
       display: flex;
       justify-content: flex-end;
@@ -223,5 +286,14 @@ export default {
 .drawer-bottom-enter-from,
 .drawer-bottom-leave-to {
   transform: translateY(100%);
+}
+
+.lku-drawer__right {
+  .lku-drawer__drag {
+    left: 0;
+    top: 50%;
+    cursor: col-resize;
+    transform: translateY(-50%);
+  }
 }
 </style>

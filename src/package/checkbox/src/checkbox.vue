@@ -87,6 +87,7 @@ export default {
         return
       }
       if (isGroup) {
+        console.log(props.disabled);
         dispatch('change', props.label);
       } else {
         const value = event?.target?.checked ? props.trueValue : props.falseValue;

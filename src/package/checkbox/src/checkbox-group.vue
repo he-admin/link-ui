@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {ref, provide, computed} from 'vue'
+import {ref, provide, computed} from 'vue';
 
 import useEmit from '../../../utils/emiter';
 
