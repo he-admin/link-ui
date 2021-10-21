@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import {ref, computed} from 'vue';
+import {ref, computed, onMounted} from 'vue';
 import {formatSize} from '@/utils/tools';
 import {getBrowserWidth} from '@/utils/dom';
 
@@ -91,9 +91,11 @@ export default {
         [`${prefix}__bottom`]: dir === 'bottom'
       }]
     });
-    const width = computed(() => {
-      return formatSize(props.size)
-    })
+
+    const width = ref(props.size);
+    // const width = computed(() => {
+    //   return formatSize(props.size)
+    // })
     const mainStyle = computed(() => {
       const placementMaps = {
         left: {left: 0, top: 0, bottom: 0, width: width.value},
@@ -104,6 +106,9 @@ export default {
       return placementMaps[props.direction] || {}
 
     });
+    onMounted(() => {
+      window.addEventListener('mousemove', handleMouseMove)
+    })
     const handleClose = () => {
       emit('update:visible', false);
       emit('close');
@@ -130,7 +135,7 @@ export default {
     };
     // 鼠标按钮松开事件
     const handleMouseUp = () => {
-      console.log('handleMouseUp');
+      canDrag.value = false;
     };
     // 鼠标移动
     const handleMouseMove = (event) => {
@@ -138,9 +143,12 @@ export default {
         return
       }
       const movedWidth = calcMoveWidth(event);
+      console.log(movedWidth);
       width.value = `${movedWidth}px`;
+      //emit('update:size', movedWidth)
     }
     const calcMoveWidth = (event) => {
+      console.log(event.pageX);
       const {clientWidth, clientHeight} = getBrowserWidth();
       let size = 0;
       switch (props.direction) {
@@ -148,13 +156,14 @@ export default {
           size = event.pageX;
           break;
         case 'right':
-          size = clientWidth - event.pageX;
+          // pageX和Y可以为负数, 如果为负数，说明左侧拉到底了，则最大宽度取clientWidth，否则取clientWidth - event.pageX
+          size = Math.min(clientWidth - event.pageX, clientWidth); // 0<=size<=clientHeight
           break;
         case 'top':
           size = event.pageY;
           break;
         case 'bottom':
-          size = clientHeight - event.pageY;
+          size = Math.min(clientHeight - event.pageY, clientHeight);
           break;
         default:
           return
