@@ -3,7 +3,7 @@
 :::demo
 ```html
 <template>
- <button @click="open">点我打开弹窗</button>
+ <lku-button @click="open" type="primary">点我打开弹窗</lku-button>
 //考虑500  '500', '500px' '15%'的情况
 <lku-drawer v-model:visible="visible" size="50%" title="抽屉1">
   <lku-button @click="visible2= true">点我</lku-button>

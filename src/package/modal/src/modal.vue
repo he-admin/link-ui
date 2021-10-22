@@ -1,46 +1,40 @@
 <template>
-  <div :class="drawerClasses">
-    <!--    阴影遮罩层-->
-    <transition name="drawer-mask">
-      <div class="lku-drawer__mask" v-if="visible" @click="handleClickMask">
-      </div>
-    </transition>
-    <transition :name="`drawer-${direction}`" @enter="transitionEnter" @leave="transitionLeave">
-      <!--    抽屉主体-->
-      <div class="lku-drawer__main" v-if="visible" :style="mainStyle">
-        <!--      head-->
-        <div class="lku-drawer__head">
-          <h1 class="lku-drawer__title">
-            <slot name="title">
-              {{ title }}
+  <teleport to="body">
+    <div :class="modalClasses">
+      <!--    阴影遮罩层-->
+      <transition name="modal-mask">
+        <div class="lku-modal__mask" v-if="visible" @click="handleClickMask">
+        </div>
+      </transition>
+      <transition :name="`modal-${direction}`" @enter="transitionEnter" @leave="transitionLeave">
+        <!--    弹窗主体-->
+        <div class="lku-modal__main" v-if="visible" style="mainStyle">
+          <!--      head-->
+          <div class="lku-modal__head">
+            <h1 class="lku-modal__title">
+              <slot name="title">
+                {{ title }}
+              </slot>
+            </h1>
+            <i class="lku-icon lku-icon-error lku-modal__close"
+               @click="handleClose">
+            </i>
+          </div>
+          <!--      内容-->
+          <div class="lku-modal__content">
+            <slot></slot>
+          </div>
+          <!--        底部插槽-->
+          <div class="lku-modal__foot">
+            <slot name="foot">
+              <lku-button>取消</lku-button>
+              <lku-button type="primary">确认</lku-button>
             </slot>
-          </h1>
-          <i class="lku-icon lku-icon-error lku-drawer__close"
-             @click="handleClose">
-
-          </i>
+          </div>
         </div>
-        <!--        drag按钮-->
-        <span class="lku-drawer__drag"
-              v-if="draggable"
-              @mousedown="handleMouseDown"
-              @mouseup="handleMouseUp">
-          <slot name="drag">
-             <i class="lku-drawer__drag-btn">
-             </i>
-          </slot>
-        </span>
-        <!--      内容-->
-        <div class="lku-drawer__content">
-          <slot></slot>
-        </div>
-        <!--        底部插槽-->
-        <div class="lku-drawer__foot" v-if="$slots.foot">
-          <slot name="foot"></slot>
-        </div>
-      </div>
-    </transition>
-  </div>
+      </transition>
+    </div>
+  </teleport>
 </template>
 
 <script>
@@ -49,7 +43,7 @@ import {formatSize} from '@/utils/tools';
 import {getBrowserWidth} from '@/utils/dom';
 
 export default {
-  name: "LkuDrawer",
+  name: "LkuModal",
   props: {
     title: {
       type: String,
@@ -61,12 +55,12 @@ export default {
     },
     direction: {
       type: String,
-      default: 'right',
+      default: 'left',
       validator: (val) => ['left', 'right', 'top', 'bottom'].includes(val)
     },
     size: {
-      type: [Number, String],
-      default: 200
+      type: String,
+      default: 500
     },
     // 是否点击蒙层可以关闭抽屉
     maskClosable: {
@@ -81,8 +75,8 @@ export default {
   },
   setup(props, {emit}) {
     const canDrag = ref(false);
-    const drawerClasses = computed(() => {
-      const prefix = 'lku-drawer';
+    const modalClasses = computed(() => {
+      const prefix = 'lku-modal';
       const dir = props.direction;
       return [prefix, {
         [`${prefix}__left`]: dir === 'left',
@@ -116,10 +110,12 @@ export default {
       handleClose();
     }
     const transitionEnter = (el, done) => {
-      el.style.transition = 'transform .3s ease'
+      el.style.transition = 'all .3s ease'
+      // done()
     };
     const transitionLeave = (el, done) => {
-      el.style.transition = 'transform .3s ease'
+      el.style.transition = 'all .3s ease'
+      //done()
     };
     // 鼠标按钮按下去事件
     const handleMouseDown = () => {
@@ -165,7 +161,7 @@ export default {
       return size;
     }
     return {
-      drawerClasses, mainStyle,
+      modalClasses, mainStyle,
       handleClose, handleClickMask,
       transitionEnter, transitionLeave,
       handleMouseDown, handleMouseUp
@@ -175,9 +171,9 @@ export default {
 </script>
 
 <style lang="less">
-@lku-drawer-index: 999;
-.lku-drawer {
-  .lku-drawer__mask {
+@lku-modal-index: 999;
+.lku-modal {
+  .lku-modal__mask {
     position: fixed;
     left: 0;
     right: 0;
@@ -185,33 +181,43 @@ export default {
     bottom: 0;
     width: 100%;
     height: 100%;
-    background-color: @mask-background-color;
-    z-index: @lku-drawer-index;
+    //background-color: @mask-background-color;
+    opacity: .5;
+    background-color: #000000;
+    z-index: @lku-modal-index;
   }
 
-  .lku-drawer__main {
+  .lku-modal__main {
     position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
     display: flex;
     flex-direction: column;
-    //left: 0;
-    //top: 0; // top和bottom都为0,相当于实现高度100%
-    //bottom: 0;
+    //left: 50%;
+    //top: 50%;
+    margin: auto;
+    //transform: translate(-50%, -50%);
+    width: 480px;
+    height: fit-content;
+    max-height: 600px;
     background-color: @white-color;
-    z-index: @lku-drawer-index;
-    box-shadow: 0 0 6px #cecece;
+    z-index: @lku-modal-index;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+    border-radius: 4px;
 
-    .lku-drawer__head {
+    .lku-modal__head {
       display: flex;
       justify-content: space-between;
       padding: 14px 20px;
-      border-bottom: 1px solid @base-border-color;
 
-      .lku-drawer__title {
+      .lku-modal__title {
         line-height: 24px;
         font-size: @medium-x-font-size;
       }
 
-      .lku-drawer__close {
+      .lku-modal__close {
         position: absolute;
         top: 14px;
         right: 10px;
@@ -225,78 +231,63 @@ export default {
       }
     }
 
-    .lku-drawer__content {
+    .lku-modal__content {
       flex: 1;
       word-wrap: break-word;
       padding: 20px;
     }
 
-    .lku-drawer__drag {
-      position: absolute;
-
-      &-btn {
-        display: inline-block;
-        width: 12px;
-        height: 60px;
-        border: 1px solid @base-border-color;
-        border-radius: 6px;
-      }
-    }
-
-    .lku-drawer__foot {
+    .lku-modal__foot {
       display: flex;
       justify-content: flex-end;
       padding: 18px 20px;
-      border-top: 1px solid @base-border-color;
     }
   }
 }
 
 /*蒙层动画*/
-.drawer-mask-enter-active, .drawer-mask-leave-active {
-  transition: opacity .5s ease-in-out;
+.modal-mask-enter-active, .modal-mask-leave-active {
+  transition: opacity .3s ease-in-out;
 }
 
-.drawer-mask-enter-from, .drawer-mask-leave-to {
+.modal-mask-enter-from, .modal-mask-leave-to {
   opacity: 0;
 }
 
 /*抽屉*/
-//.drawer-right-enter-active,
-//.drawer-right-leave-active {
+//.modal-right-enter-active,
+//.modal-right-leave-active {
 //  transition: transform .3s ease;
 //}
 
 // 左侧弹出
-.drawer-left-enter-from,
-.drawer-left-leave-to {
-  transform: translateX(-100%);
+.modal-left-enter-from,.modal-left-leave-to {
+  transform: scale(0.8);
+  opacity: 0;
+  //transform-origin: 100% 0;
 }
 
-// 右侧弹出
-.drawer-right-enter-from,
-.drawer-right-leave-to {
-  transform: translateX(100%);
-}
+//.modal-left-leave-to{
+//  transform: scale(.5);
+//  transform-origin:100% 0;
+//  opacity: 0;
+//}
 
-// 上面弹出
-.drawer-top-enter-from,
-.drawer-top-leave-to {
-  transform: translateY(-100%);
-}
-
-// 下面弹出
-.drawer-bottom-enter-from,
-.drawer-bottom-leave-to {
-  transform: translateY(100%);
-}
-
-.lku-drawer__right {
-  .lku-drawer__drag {
-    left: 0;
-    top: 50%;
-    cursor: col-resize;
-    transform: translateY(-50%);
-  }
-}
+//// 右侧弹出
+//.modal-right-enter-from,
+//.modal-right-leave-to {
+//  transform: translateX(100%);
+//}
+//
+//// 上面弹出
+//.modal-top-enter-from,
+//.modal-top-leave-to {
+//  transform: translateY(-100%);
+//}
+//
+//// 下面弹出
+//.modal-bottom-enter-from,
+//.modal-bottom-leave-to {
+//  transform: translateY(100%);
+//}
 </style>

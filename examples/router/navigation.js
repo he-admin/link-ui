@@ -30,6 +30,15 @@ export default [{
       component: () => import('../docs/zh_CN/drawer.md')
     },
     {
+      path: '/component/modal',
+      name: 'Modal',
+      meta: {
+        type: 'component',
+        title: 'Modal弹窗'
+      },
+      component: () => import('../docs/zh_CN/modal.md')
+    },
+    {
       path: '/component/button',
       name: 'Button',
       meta: {
