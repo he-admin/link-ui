@@ -8,7 +8,9 @@
       </transition>
       <transition :name="`modal-${direction}`" @enter="transitionEnter" @leave="transitionLeave">
         <!--    弹窗主体-->
-        <div class="lku-modal__main" v-if="visible" style="mainStyle">
+        <div class="lku-modal__main"
+             v-if="visible"
+             :style="mainStyle">
           <!--      head-->
           <div class="lku-modal__head">
             <h1 class="lku-modal__title">
@@ -22,13 +24,14 @@
           </div>
           <!--      内容-->
           <div class="lku-modal__content">
+            {{loading}}
             <slot></slot>
           </div>
           <!--        底部插槽-->
           <div class="lku-modal__foot">
             <slot name="foot">
-              <lku-button>取消</lku-button>
-              <lku-button type="primary">确认</lku-button>
+              <lku-button @click="handleCancel">取消</lku-button>
+              <lku-button type="primary" @click="handleConfirm" :loading="loading">确认</lku-button>
             </slot>
           </div>
         </div>
@@ -38,7 +41,7 @@
 </template>
 
 <script>
-import {ref, computed, onMounted} from 'vue';
+import {ref, watch, computed, onMounted} from 'vue';
 import {formatSize} from '@/utils/tools';
 import {getBrowserWidth} from '@/utils/dom';
 
@@ -55,8 +58,8 @@ export default {
     },
     direction: {
       type: String,
-      default: 'left',
-      validator: (val) => ['left', 'right', 'top', 'bottom'].includes(val)
+      default: 'center',
+      validator: (val) => ['left', 'right', 'top', 'bottom', 'center'].includes(val)
     },
     size: {
       type: String,
@@ -71,10 +74,27 @@ export default {
     draggable: {
       type: Boolean,
       default: true
+    },
+    // 弹窗的宽度
+    width: {
+      type: [String, Number],
+      default: 480
+    },
+    // 按钮的loading
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, {emit}) {
     const canDrag = ref(false);
+    watch(() => {
+      return props.loading
+    }, (newValue) => {
+      if (!newValue) {
+        handleClose();
+      }
+    })
     const modalClasses = computed(() => {
       const prefix = 'lku-modal';
       const dir = props.direction;
@@ -88,13 +108,8 @@ export default {
 
     const width = ref(formatSize(props.size));
     const mainStyle = computed(() => {
-      const placementMaps = {
-        left: {left: 0, top: 0, bottom: 0, width: width.value},
-        right: {right: 0, top: 0, bottom: 0, width: width.value},
-        top: {top: 0, left: 0, right: 0, height: width.value},
-        bottom: {bottom: 0, left: 0, right: 0, height: width.value}
-      };
-      return placementMaps[props.direction] || {}
+      const style = {width: formatSize(props.width)};
+      return style
     });
     onMounted(() => {
       window.addEventListener('mousemove', handleMouseMove)
@@ -159,12 +174,21 @@ export default {
           return
       }
       return size;
+    };
+    const handleCancel = (event) => {
+      // 点击取消默认是关闭弹窗
+      emit('update:visible', false);
+      emit('on-cancel', event);
+    };
+    const handleConfirm = (event) => {
+      emit('on-ok', event);
     }
     return {
       modalClasses, mainStyle,
       handleClose, handleClickMask,
       transitionEnter, transitionLeave,
-      handleMouseDown, handleMouseUp
+      handleMouseDown, handleMouseUp,
+      handleCancel, handleConfirm
     }
   }
 }
@@ -235,10 +259,13 @@ export default {
       flex: 1;
       word-wrap: break-word;
       padding: 20px;
+      overflow-y: auto;
+      max-height: 100%;
     }
 
     .lku-modal__foot {
       display: flex;
+      flex-shrink: 0;
       justify-content: flex-end;
       padding: 18px 20px;
     }
@@ -260,34 +287,34 @@ export default {
 //  transition: transform .3s ease;
 //}
 
-// 左侧弹出
-.modal-left-enter-from,.modal-left-leave-to {
+// 从中间弹出
+.modal-center-enter-from, .modal-center-leave-to {
   transform: scale(0.8);
   opacity: 0;
-  //transform-origin: 100% 0;
 }
 
-//.modal-left-leave-to{
-//  transform: scale(.5);
-//  transform-origin:100% 0;
-//  opacity: 0;
-//}
+// 从左边弹出
+.modal-left-enter-from, .modal-left-leave-to {
+  transform: translateX(-50%);
+  opacity: 0;
+}
 
-//// 右侧弹出
-//.modal-right-enter-from,
-//.modal-right-leave-to {
-//  transform: translateX(100%);
-//}
-//
-//// 上面弹出
-//.modal-top-enter-from,
-//.modal-top-leave-to {
-//  transform: translateY(-100%);
-//}
-//
-//// 下面弹出
-//.modal-bottom-enter-from,
-//.modal-bottom-leave-to {
-//  transform: translateY(100%);
-//}
+
+// 从右边边弹出
+.modal-right-enter-from, .modal-right-leave-to {
+  transform: translateX(50%);
+  opacity: 0;
+}
+
+// 从上面边弹出
+.modal-top-enter-from, .modal-top-leave-to {
+  transform: translateY(-50%);
+  opacity: 0;
+}
+
+// 从下边弹出
+.modal-bottom-enter-from, .modal-bottom-leave-to {
+  transform: translateY(50%);
+  opacity: 0;
+}
 </style>
