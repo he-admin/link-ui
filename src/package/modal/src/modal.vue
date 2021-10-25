@@ -1,5 +1,5 @@
 <template>
-  <teleport to="body">
+  <teleport to="body" disabled>
     <div :class="modalClasses">
       <!--    阴影遮罩层-->
       <transition name="modal-mask">
@@ -9,10 +9,14 @@
       <transition :name="`modal-${direction}`" @enter="transitionEnter" @leave="transitionLeave">
         <!--    弹窗主体-->
         <div class="lku-modal__main"
-             v-if="visible"
+             ref="lkuModal"
+             v-show="visible"
              :style="mainStyle">
           <!--      head-->
-          <div class="lku-modal__head">
+          <div class="lku-modal__head"
+               @mousedown="handleMouseDown"
+               @mouseup="handleMouseUp"
+               @mousemove="handleMouseMove">
             <h1 class="lku-modal__title">
               <slot name="title">
                 {{ title }}
@@ -24,11 +28,10 @@
           </div>
           <!--      内容-->
           <div class="lku-modal__content">
-            {{loading}}
             <slot></slot>
           </div>
           <!--        底部插槽-->
-          <div class="lku-modal__foot">
+          <div class="lku-modal__foot" :style="footStyle">
             <slot name="foot">
               <lku-button @click="handleCancel">取消</lku-button>
               <lku-button type="primary" @click="handleConfirm" :loading="loading">确认</lku-button>
@@ -41,7 +44,7 @@
 </template>
 
 <script>
-import {ref, watch, computed, onMounted} from 'vue';
+import {ref, watch, computed, onMounted, onUpdated} from 'vue';
 import {formatSize} from '@/utils/tools';
 import {getBrowserWidth} from '@/utils/dom';
 
@@ -70,7 +73,7 @@ export default {
       type: Boolean,
       default: true
     },
-    // 是否可拖拽改变抽屉尺寸
+    // 是否可拖拽弹窗
     draggable: {
       type: Boolean,
       default: true
@@ -84,15 +87,31 @@ export default {
     loading: {
       type: Boolean,
       default: false
+    },
+    // 底部按钮的位置
+    buttonPlacement: {
+      type: String,
+      default: 'right',
+      validator: (val) => ['center', 'right'].includes(val)
     }
   },
   setup(props, {emit}) {
     const canDrag = ref(false);
+    const lkuModal = ref(null);
     watch(() => {
       return props.loading
     }, (newValue) => {
       if (!newValue) {
         handleClose();
+      }
+    })
+    watch(() => {
+      return props.visible
+    }, (newVal) => {
+      // 弹窗消失时，移除鼠标移动事件
+      if (!newVal) {
+        window.removeEventListener('mousemove', handleMouseMove);
+        canDrag.value = false;
       }
     })
     const modalClasses = computed(() => {
@@ -107,9 +126,22 @@ export default {
     });
 
     const width = ref(formatSize(props.size));
+    const margin = ref({margin: 'auto'});
+    const left = ref('auto');
+    const top = ref('auto');
+    const pageX = ref(0);
+    const pageY = ref(0);
+
     const mainStyle = computed(() => {
-      const style = {width: formatSize(props.width)};
+      const style = {width: formatSize(props.width), marginLeft: left.value, marginTop: top.value};
       return style
+    });
+    const footStyle = computed(() => {
+      const placementMaps = {
+        right: 'flex-end',
+        center: 'center'
+      };
+      return {justifyContent: placementMaps[props.buttonPlacement]}
     });
     onMounted(() => {
       window.addEventListener('mousemove', handleMouseMove)
@@ -125,55 +157,73 @@ export default {
       handleClose();
     }
     const transitionEnter = (el, done) => {
-      el.style.transition = 'all .3s ease'
-      // done()
+      el.style.transition = 'transform .3s ease,scale .3s ease'
+      done()
     };
     const transitionLeave = (el, done) => {
-      el.style.transition = 'all .3s ease'
+      el.style.transition = 'opacity .3s ease,transform .3s ease,scale .3s ease'
       //done()
     };
     // 鼠标按钮按下去事件
-    const handleMouseDown = () => {
+    const handleMouseDown = (event) => {
       console.log('handleMouseDown');
       if (!props.draggable) {
         return
       }
       canDrag.value = true;
+      pageX.value = event.pageX - lkuModal.value.offsetLeft;
+      pageY.value = event.pageY - lkuModal.value.offsetTop;
     };
     // 鼠标按钮松开事件
     const handleMouseUp = () => {
       canDrag.value = false;
     };
     // 鼠标移动
-    const handleMouseMove = (event) => {
+    const handleMouseMove = (pageX, pageY) => {
       if (!props.draggable || !canDrag.value) {
         return
       }
-      const movedWidth = calcMoveWidth(event);
-      width.value = `${movedWidth}px`;
+      const marginWidth = calcMoveWidth(pageX, pageY);
+      margin.value = marginWidth;
       emit('drag');
     }
     const calcMoveWidth = (event) => {
       const {clientWidth, clientHeight} = getBrowserWidth();
-      let size = 0;
-      switch (props.direction) {
-        case 'left':
-          size = event.pageX;
-          break;
-        case 'right':
-          // pageX和Y可以为负数, 如果为负数，说明左侧拉到底了，则最大宽度取clientWidth，否则取clientWidth - event.pageX
-          size = Math.min(clientWidth - event.pageX, clientWidth); // 0<=size<=clientHeight
-          break;
-        case 'top':
-          size = event.pageY;
-          break;
-        case 'bottom':
-          size = Math.min(clientHeight - event.pageY, clientHeight);
-          break;
-        default:
-          return
+      console.log(lkuModal.value.offsetLeft, lkuModal.value.offsetTop);
+      const offsetLeft = lkuModal.value.offsetLeft;
+      const offsetTop = lkuModal.value.offsetTop;
+
+      left.value = event.clientX - pageX.value + 'px'
+      top.value = event.clientY - pageY.value + 'px'
+      console.log(left.value, top.value);
+      if (event.clientX - pageX.value <= 0) {
+        left.value = 0
       }
-      return size;
+      if (event.clientY - pageY.value <= 0) {
+        top.value = 0;
+      }
+      let size = 0;
+      // switch (props.direction) {
+      //   case 'left':
+      //     size = event.pageX;
+      //     break;
+      //   case 'right':
+      //     // pageX和Y可以为负数, 如果为负数，说明左侧拉到底了，则最大宽度取clientWidth，否则取clientWidth - event.pageX
+      //     size = Math.min(clientWidth - event.pageX, clientWidth); // 0<=size<=clientHeight
+      //     break;
+      //   case 'top':
+      //     size = event.pageY;
+      //     break;
+      //   case 'bottom':
+      //     size = Math.min(clientHeight - event.pageY, clientHeight);
+      //     break;
+      //   default:
+      //     return
+      // }
+      // return {
+      //   marginLeft: (event.clientX - lkuModal.value.offsetLeft) + 'px',
+      //   marginTop: (event.clientY - lkuModal.value.offsetTop) + 'px'
+      // };
     };
     const handleCancel = (event) => {
       // 点击取消默认是关闭弹窗
@@ -184,10 +234,12 @@ export default {
       emit('on-ok', event);
     }
     return {
-      modalClasses, mainStyle,
+      lkuModal,
+      modalClasses,
+      mainStyle, footStyle,
       handleClose, handleClickMask,
       transitionEnter, transitionLeave,
-      handleMouseDown, handleMouseUp,
+      handleMouseDown, handleMouseUp, handleMouseMove,
       handleCancel, handleConfirm
     }
   }
@@ -235,6 +287,8 @@ export default {
       display: flex;
       justify-content: space-between;
       padding: 14px 20px;
+      //border-bottom: 1px solid @base-border-color;
+      cursor: move;
 
       .lku-modal__title {
         line-height: 24px;
@@ -266,8 +320,8 @@ export default {
     .lku-modal__foot {
       display: flex;
       flex-shrink: 0;
-      justify-content: flex-end;
       padding: 18px 20px;
+      border-top: 1px solid @base-border-color;
     }
   }
 }

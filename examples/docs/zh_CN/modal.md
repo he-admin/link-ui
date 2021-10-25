@@ -4,7 +4,7 @@
 ```html
 <template>
 {{loading}}
-  <lku-button @click="visible = true">点我打开弹窗</lku-button>
+  <lku-button @click="visible = true">点我打开弹窗1</lku-button>
   <lku-modal title="弹窗1" 
 v-model:visible="visible" 
 :width="740"
@@ -125,11 +125,12 @@ let loading = ref(false);
       mulSelect: [{type: 'array', required: true, message: '至少选择两个', min: 2}]
     })
 const ok = ()=>{
-  loading.value = true;
   lkuForm.value.validate(res=>{
-    setTimeout(() => {
+    if(res){
+ loading.value = true;
+setTimeout(() => {
          loading.value = false
-       }, 2000)
+       }, 2000)}
 })
 }
     return {visible,loading,lkuForm, form2, rules, handleSubmit,ok};
