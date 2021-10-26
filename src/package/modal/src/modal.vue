@@ -171,8 +171,9 @@ export default {
         return
       }
       canDrag.value = true;
-      pageX.value = event.pageX - lkuModal.value.offsetLeft;
-      pageY.value = event.pageY - lkuModal.value.offsetTop;
+      pageX.value = event.clientX - lkuModal.value.offsetLeft;
+      pageY.value = event.clientY - lkuModal.value.offsetTop;
+
     };
     // 鼠标按钮松开事件
     const handleMouseUp = () => {
@@ -189,19 +190,32 @@ export default {
     }
     const calcMoveWidth = (event) => {
       const {clientWidth, clientHeight} = getBrowserWidth();
-      console.log(lkuModal.value.offsetLeft, lkuModal.value.offsetTop);
-      const offsetLeft = lkuModal.value.offsetLeft;
-      const offsetTop = lkuModal.value.offsetTop;
+      console.log(lkuModal.value.offsetLeft, lkuModal.value.offsetTop, lkuModal.value.offset);
 
-      left.value = event.clientX - pageX.value + 'px'
+
       top.value = event.clientY - pageY.value + 'px'
       console.log(left.value, top.value);
-      if (event.clientX - pageX.value <= 0) {
-        left.value = 0
+
+      const positionLeft = window.innerWidth - lkuModal.value.offsetWidth;
+      const positionTop = window.innerHeight - lkuModal.value.offsetHeight;
+
+      //left.value = Math.max(event.clientX - pageX.value, positionLeft);
+
+      if (event.clientX - pageX.value >= 0 && event.clientX - pageX.value <= positionLeft) {
+        left.value = event.clientX - pageX.value + 'px'
       }
-      if (event.clientY - pageY.value <= 0) {
-        top.value = 0;
+
+      console.log(event.clientY - pageY.value);
+      if (event.clientY - pageY.value >= 0 && event.clientY - pageY.value <= positionTop) {
+        top.value = event.clientY - pageY.value + 'px'
       }
+
+      // if (event.clientX - pageX.value >= positionLeft) {
+      //   left.value = positionLeft + 'px'
+      // }
+      // if (event.clientY - pageY.value <= 0) {
+      //   top.value = 0;
+      // }
       let size = 0;
       // switch (props.direction) {
       //   case 'left':
