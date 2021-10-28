@@ -1,5 +1,5 @@
 <template>
-  <teleport to="body" disabled>
+  <teleport to="body" :disabled="!appendToBody">
     <div :class="modalClasses">
       <!--    阴影遮罩层-->
       <transition name="modal-mask">
@@ -10,7 +10,7 @@
         <!--    弹窗主体-->
         <div class="lku-modal__main"
              ref="lkuModal"
-             v-show="visible"
+             v-if="visible"
              :style="mainStyle">
           <!--      head-->
           <div class="lku-modal__head"
@@ -93,6 +93,11 @@ export default {
       type: String,
       default: 'right',
       validator: (val) => ['center', 'right'].includes(val)
+    },
+    // 是否插入到body
+    appendToBody: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, {emit}) {
@@ -127,9 +132,6 @@ export default {
 
     const marginLeft = ref('auto');
     const marginTop = ref('auto');
-    const pageX = ref(0);
-    const pageY = ref(0);
-
     const mainStyle = computed(() => {
       return {
         width: formatSize(props.width),
@@ -204,7 +206,7 @@ export default {
         // 变化量为整数，表示X轴向右拖动，否则向左
       }
       // 防止弹窗垂直方向 被拖拽出浏览器
-      if (event.clientY - innerY >= 0 && event.clientY - pageY.value <= maxMarginTop) {
+      if (event.clientY - innerY >= 0 && event.clientY - innerY <= maxMarginTop) {
         marginTop.value = event.clientY - innerY + 'px'
       }
     };

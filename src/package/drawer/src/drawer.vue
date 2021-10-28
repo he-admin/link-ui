@@ -17,7 +17,6 @@
           </h1>
           <i class="lku-icon lku-icon-error lku-drawer__close"
              @click="handleClose">
-
           </i>
         </div>
         <!--        drag按钮-->
@@ -48,6 +47,7 @@ import {ref, computed, onMounted} from 'vue';
 import {formatSize} from '@/utils/tools';
 import {getBrowserWidth} from '@/utils/dom';
 
+const MIN_WIDTH = 300;
 export default {
   name: "LkuDrawer",
   props: {
@@ -66,7 +66,7 @@ export default {
     },
     size: {
       type: [Number, String],
-      default: 200
+      default: 400
     },
     // 是否点击蒙层可以关闭抽屉
     maskClosable: {
@@ -76,7 +76,7 @@ export default {
     // 是否可拖拽改变抽屉尺寸
     draggable: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   setup(props, {emit}) {
@@ -113,6 +113,7 @@ export default {
       if (!props.maskClosable) {
         return;
       }
+      canDrag.value = false;
       handleClose();
     }
     const transitionEnter = (el, done) => {
@@ -143,21 +144,27 @@ export default {
       emit('drag');
     }
     const calcMoveWidth = (event) => {
-      const {clientWidth, clientHeight} = getBrowserWidth();
+      const {innerWidth, innerHeight} = window
       let size = 0;
       switch (props.direction) {
         case 'left':
-          size = event.pageX;
+          size = Math.max(event.clientX, MIN_WIDTH)
           break;
         case 'right':
           // pageX和Y可以为负数, 如果为负数，说明左侧拉到底了，则最大宽度取clientWidth，否则取clientWidth - event.pageX
-          size = Math.min(clientWidth - event.pageX, clientWidth); // 0<=size<=clientHeight
+          size = Math.min(innerWidth - event.clientX, innerWidth);
+          if (size <= MIN_WIDTH) {
+            size = MIN_WIDTH; // MIN_WIDTH<=size<=clientHeight
+          }
           break;
         case 'top':
-          size = event.pageY;
+          size = Math.max(event.clientY, MIN_WIDTH);
           break;
         case 'bottom':
-          size = Math.min(clientHeight - event.pageY, clientHeight);
+          size = Math.min(innerHeight - event.clientY, innerHeight);
+          if (size <= MIN_WIDTH) {
+            size = MIN_WIDTH; // MIN_WIDTH<=size<=clientHeight
+          }
           break;
         default:
           return
@@ -193,9 +200,6 @@ export default {
     position: fixed;
     display: flex;
     flex-direction: column;
-    //left: 0;
-    //top: 0; // top和bottom都为0,相当于实现高度100%
-    //bottom: 0;
     background-color: @white-color;
     z-index: @lku-drawer-index;
     box-shadow: 0 0 6px #cecece;
@@ -209,6 +213,7 @@ export default {
       .lku-drawer__title {
         line-height: 24px;
         font-size: @medium-x-font-size;
+        user-select: none;
       }
 
       .lku-drawer__close {
@@ -236,9 +241,8 @@ export default {
 
       &-btn {
         display: inline-block;
-        width: 12px;
-        height: 60px;
         border: 1px solid @base-border-color;
+        background-color: @white-color;
         border-radius: 6px;
       }
     }
@@ -262,10 +266,6 @@ export default {
 }
 
 /*抽屉*/
-//.drawer-right-enter-active,
-//.drawer-right-leave-active {
-//  transition: transform .3s ease;
-//}
 
 // 左侧弹出
 .drawer-left-enter-from,
@@ -291,12 +291,58 @@ export default {
   transform: translateY(100%);
 }
 
+.lku-drawer__left {
+  .lku-drawer__drag {
+    right: 0;
+    top: 50%;
+    cursor: col-resize;
+    transform: translate(50%, 50%);
+
+    &-btn {
+      width: 12px;
+      height: 60px;
+    }
+  }
+}
+
 .lku-drawer__right {
   .lku-drawer__drag {
     left: 0;
     top: 50%;
     cursor: col-resize;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
+
+    &-btn {
+      width: 12px;
+      height: 60px;
+    }
+  }
+}
+
+.lku-drawer__top {
+  .lku-drawer__drag {
+    bottom: 0;
+    left: 50%;
+    cursor: row-resize;
+    transform: translate(50%, 50%);
+
+    &-btn {
+      width: 60px;
+      height: 12px;
+    }
+  }
+}
+
+.lku-drawer__bottom {
+  .lku-drawer__drag {
+    left: 50%;
+    cursor: row-resize;
+    transform: translate(-50%, -50%);
+
+    &-btn {
+      width: 60px;
+      height: 12px;
+    }
   }
 }
 </style>

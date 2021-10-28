@@ -38,7 +38,8 @@ export default {
       default: false
     },
     icon: {
-      type: String
+      type: String,
+      default: ''
     },
     size: {
       type: String,
