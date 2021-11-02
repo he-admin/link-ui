@@ -6,7 +6,7 @@
         <div class="lku-modal__mask" v-if="visible" @click="handleClickMask">
         </div>
       </transition>
-      <transition :name="`modal-${direction}`" @enter="transitionEnter" @leave="transitionLeave">
+      <transition appear :name="`modal-${direction}`" @enter="transitionEnter" @leave="transitionLeave">
         <!--    弹窗主体-->
         <div class="lku-modal__main"
              ref="lkuModal"
@@ -14,6 +14,7 @@
              :style="mainStyle">
           <!--      head-->
           <div class="lku-modal__head"
+               :style="{cursor : draggable ? 'move' : 'default'}"
                @mousedown="handleMouseDown"
                @mouseup="handleMouseUp"
                @mousemove="handleMouseMove">
@@ -44,9 +45,8 @@
 </template>
 
 <script>
-import {ref, watch, computed, onMounted, onUpdated, nextTick} from 'vue';
+import {ref, watch, computed, onMounted} from 'vue';
 import {formatSize} from '@/utils/tools';
-import {getBrowserWidth} from '@/utils/dom';
 
 export default {
   name: "LkuModal",
@@ -59,14 +59,11 @@ export default {
       type: Boolean,
       default: false
     },
+    // 过渡动画的方向
     direction: {
       type: String,
       default: 'center',
       validator: (val) => ['left', 'right', 'top', 'bottom', 'center'].includes(val)
-    },
-    size: {
-      type: String,
-      default: 500
     },
     // 是否点击蒙层可以关闭抽屉
     maskClosable: {
@@ -76,7 +73,7 @@ export default {
     // 是否可拖拽弹窗
     draggable: {
       type: Boolean,
-      default: true
+      default: false
     },
     // 弹窗的宽度
     width: {
@@ -273,7 +270,6 @@ export default {
       justify-content: space-between;
       padding: 14px 20px;
       //border-bottom: 1px solid @base-border-color;
-      cursor: move;
 
       .lku-modal__title {
         line-height: 24px;
