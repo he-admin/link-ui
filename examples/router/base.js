@@ -57,6 +57,15 @@ export default [
           title: 'Form表单',
         },
         component: () => import('../docs/zh_CN/form.md')
+      },
+      {
+        path: '/component/tooltip',
+        name: 'ToolTip',
+        meta: {
+          type: 'component',
+          title: 'Tooltip提示',
+        },
+        component: () => import('../docs/zh_CN/tooltip.md')
       }
     ],
   },

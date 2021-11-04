@@ -94,3 +94,29 @@ export function getBrowserWidth() {
     clientHeight: document.documentElement.clientHeight
   };
 }
+
+/**
+ * @method on
+ * @description 为指定元素添加事件
+ * @param { Node } target
+ * @param { String } event
+ * @param { Function } fn
+ */
+export function on(target, event, fn) {
+  if (target && event && fn) {
+    target.addEventListener(event, fn)
+  }
+}
+
+/**
+ * @method off
+ * @description 为指定元素移除事件
+ * @param { Node } target
+ * @param { String } event
+ * @param { Function } fn
+ */
+export function off(target, event, fn) {
+  if (target && event && fn) {
+    target.removeEventListener(event, fn)
+  }
+}
