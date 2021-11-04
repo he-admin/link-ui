@@ -200,3 +200,32 @@ export default {
 
 ```
 :::
+
+### Modal Attributes
+| 参数          | 说明                                                         |       类型        |            可选值             | 默认值  | 必填 |
+| :------------ | :----------------------------------------------------------- | :---------------: | :---------------------------: | :------ | :--- |
+| v-model:visible         | 是否显示，可使用`v-model`双向绑定                            |     `Boolean`     |               -               | -       | 否   |
+| direction     | 弹出的起始方向                                                   |     `String`      | `left | top | right | bottom` | `right` | 否   |
+| duration      | 动画执行时间，单位s。                                                 |     `Number`      |               -               | `0.3` | 否   |
+| animation      | 动画类型                                                 |     `String`      |               -               | ease | 否   |
+| title         | 标题                                                         |     `String`      |               -               | -       | 否   |
+| width          | 弹窗大小尺寸，左右时为宽度，上下时为高度。支持如480px 480 20%写法                     | `String | Number` |               -               | `480px` | 否   |
+| closable      | 是否显示关闭按钮                                             |     `Boolean`     |               -               | `true`  | 否   |
+| mask          | 是否展示蒙层                                                 |     `Boolean`     |               -               | `true`  | 否   |
+| mask-closable | 点击蒙层是否收起抽屉                                         |     `Boolean`     |               -               | `true`  | 否   |
+| draggable     | 是否可以拖拽                                                 |     `Boolean`     |               -               | `false` | 否   |
+
+### Drawer Events
+| 事件名 | 说明                           | 回调函数参数             |
+| :----- | :----------------------------- | :----------------------- |
+| change | 组件显示隐藏状态发生变化时触发 | 当前状态：`true | false` |
+| close  | 抽屉关闭时触发                 | -                        |
+| drag   | 拖拽改变位置时触发             | 当前弹窗的位置，距离left与top的距离，{left:XXX,top:XXX}   |
+
+### Drawer Slots
+| name      | 说明               |
+| :-------- | :----------------- |
+| default   | 主体内容           |
+| title     | 自定义title        |
+| foot     | 自定义foot        |
+| draggable | 自定义拖拽区的内容 |

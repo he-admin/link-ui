@@ -276,7 +276,7 @@ export default {
 | direction     | 弹出的方向                                                   |     `String`      | `left | top | right | bottom` | `right` | 否   |
 | duration      | 动画执行时间                                                 |     `Number`      |               -               | `300ms` | 否   |
 | title         | 标题                                                         |     `String`      |               -               | -       | 否   |
-| size          | 抽屉大小尺寸，左右时为宽度，上下时为高度。可以使用`sync`语法 | `String | Number` |               -               | `300px` | 否   |
+| size          | 抽屉大小尺寸，左右时为宽度，上下时为高度。            | `String | Number` |               -               | `300px` | 否   |
 | closable      | 是否显示关闭按钮                                             |     `Boolean`     |               -               | `true`  | 否   |
 | mask          | 是否展示蒙层                                                 |     `Boolean`     |               -               | `true`  | 否   |
 | mask-closable | 点击蒙层是否收起抽屉                                         |     `Boolean`     |               -               | `true`  | 否   |

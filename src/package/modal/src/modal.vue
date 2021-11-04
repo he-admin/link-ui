@@ -3,7 +3,7 @@
     <div :class="modalClasses">
       <!--    阴影遮罩层-->
       <transition name="modal-mask">
-        <div class="lku-modal__mask" v-if="visible" @click="handleClickMask">
+        <div class="lku-modal__mask" v-if="visible && mask" @click="handleClickMask">
         </div>
       </transition>
       <transition appear :name="`modal-${direction}`" @enter="transitionEnter" @leave="transitionLeave">
@@ -24,6 +24,7 @@
               </slot>
             </h1>
             <i class="lku-icon lku-icon-error lku-modal__close"
+               v-if="closable"
                @click="handleClose">
             </i>
           </div>
@@ -65,6 +66,16 @@ export default {
       default: 'center',
       validator: (val) => ['left', 'right', 'top', 'bottom', 'center'].includes(val)
     },
+    // 动画过渡时间
+    duration: {
+      type: Number,
+      default: .3
+    },
+    // 动画类型
+    animation: {
+      type: String,
+      default: 'ease',
+    },
     // 是否点击蒙层可以关闭抽屉
     maskClosable: {
       type: Boolean,
@@ -74,6 +85,14 @@ export default {
     draggable: {
       type: Boolean,
       default: false
+    },
+    closable: {
+      type: Boolean,
+      default: true
+    },
+    mask: {
+      type: Boolean,
+      default: true
     },
     // 弹窗的宽度
     width: {
@@ -115,6 +134,7 @@ export default {
         window.removeEventListener('mousemove', handleMouseMove);
         canDrag.value = false;
       }
+      emit('change', newVal)
     })
     const modalClasses = computed(() => {
       const prefix = 'lku-modal';
@@ -159,9 +179,9 @@ export default {
       el.style.transition = 'transform .3s ease,scale .3s ease'
       done()
     };
-    const transitionLeave = (el, done) => {
-      el.style.transition = 'opacity .3s ease,transform .3s ease,scale .3s ease'
-      //done()
+    const transitionLeave = (el) => {
+      console.log(props.duration, props.animation);
+      el.style.transition = `opacity ${props.duration}s ${props.animation}, transform ${props.duration}s ${props.animation}, scale ${props.duration}s ${props.animation}`
     };
 
     let maxMarginLeft = 0;
@@ -170,7 +190,6 @@ export default {
     let innerY = 0;
     // 鼠标按钮按下去事件
     const handleMouseDown = (event) => {
-      console.log('handleMouseDown');
       if (!props.draggable) {
         return
       }
@@ -193,14 +212,13 @@ export default {
         return
       }
       calcMoveWidth(pageX, pageY);
-      emit('drag');
+      emit('drag', {left: lkuModal.value.offsetLeft, top: lkuModal.value.offsetTop});
     }
     const calcMoveWidth = (event) => {
       // 防止弹窗水平方向 被拖拽出浏览器
       if (event.clientX - innerX >= 0 && event.clientX - innerX <= maxMarginLeft) {
         marginLeft.value = event.clientX - innerX + 'px'
-        // (event.clientX - innerX ),表示当前clientX - 鼠标开始点的时候原始clientX = 变化量  + 原始offsetWidth,
-        // 变化量为整数，表示X轴向右拖动，否则向左
+        // (event.clientX - innerX ),表示当前clientX - 鼠标开始点的时候原始clientX = 变化量  + 原始offsetWidth, 变化量为整数，表示X轴向右拖动，否则向左
       }
       // 防止弹窗垂直方向 被拖拽出浏览器
       if (event.clientY - innerY >= 0 && event.clientY - innerY <= maxMarginTop) {
@@ -227,129 +245,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less">
-@lku-modal-index: 999;
-.lku-modal {
-  .lku-modal__mask {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    //background-color: @mask-background-color;
-    opacity: .5;
-    background-color: #000000;
-    z-index: @lku-modal-index;
-  }
-
-  .lku-modal__main {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    //left: 50%;
-    //top: 50%;
-    margin: auto;
-    //transform: translate(-50%, -50%);
-    width: 480px;
-    height: fit-content;
-    max-height: 600px;
-    background-color: @white-color;
-    z-index: @lku-modal-index;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
-    border-radius: 4px;
-
-    .lku-modal__head {
-      display: flex;
-      justify-content: space-between;
-      padding: 14px 20px;
-      //border-bottom: 1px solid @base-border-color;
-
-      .lku-modal__title {
-        line-height: 24px;
-        font-size: @medium-x-font-size;
-      }
-
-      .lku-modal__close {
-        position: absolute;
-        top: 14px;
-        right: 10px;
-        cursor: pointer;
-        transition: transform .2s;
-
-        &:hover {
-          color: @primary-color;
-          transform: rotate(90deg);
-        }
-      }
-    }
-
-    .lku-modal__content {
-      flex: 1;
-      word-wrap: break-word;
-      padding: 20px;
-      overflow-y: auto;
-      max-height: 100%;
-    }
-
-    .lku-modal__foot {
-      display: flex;
-      flex-shrink: 0;
-      padding: 18px 20px;
-      border-top: 1px solid @base-border-color;
-    }
-  }
-}
-
-/*蒙层动画*/
-.modal-mask-enter-active, .modal-mask-leave-active {
-  transition: opacity .3s ease-in-out;
-}
-
-.modal-mask-enter-from, .modal-mask-leave-to {
-  opacity: 0;
-}
-
-/*抽屉*/
-//.modal-right-enter-active,
-//.modal-right-leave-active {
-//  transition: transform .3s ease;
-//}
-
-// 从中间弹出
-.modal-center-enter-from, .modal-center-leave-to {
-  transform: scale(0.8);
-  opacity: 0;
-}
-
-// 从左边弹出
-.modal-left-enter-from, .modal-left-leave-to {
-  transform: translateX(-50%);
-  opacity: 0;
-}
-
-
-// 从右边边弹出
-.modal-right-enter-from, .modal-right-leave-to {
-  transform: translateX(50%);
-  opacity: 0;
-}
-
-// 从上面边弹出
-.modal-top-enter-from, .modal-top-leave-to {
-  transform: translateY(-50%);
-  opacity: 0;
-}
-
-// 从下边弹出
-.modal-bottom-enter-from, .modal-bottom-leave-to {
-  transform: translateY(50%);
-  opacity: 0;
-}
-</style>
