@@ -35,7 +35,7 @@ export function addClass(dom, ...classNames) {
  * @param { NodeObject } dom dom元素
  * @param { String } classNames 需要移除的className,可以为多个参数
  */
-export function remove(dom, ...classNames) {
+export function removeClass(dom, ...classNames) {
   if (!dom || !classNames) {
     return;
   }

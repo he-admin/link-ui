@@ -65,7 +65,7 @@ export default [
           type: 'component',
           title: 'Tooltip提示',
         },
-        component: () => import('../docs/zh_CN/tooltip.md')
+        component: () => import('../docs/zh_CN/test.vue')
       }
     ],
   },
