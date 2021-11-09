@@ -13,11 +13,15 @@ export default {
   props: {
     placement: {
       type: String,
-      default: 'left-start'
+      default: 'top'
     },
     content: {
       type: String,
       default: ''
+    },
+    width: {
+      type: String,
+      default: '200px'
     }
   },
   setup(props, {slots}) {
@@ -30,6 +34,7 @@ export default {
       el.style.cursor = 'pointer';
       const rect = el.getBoundingClientRect();
       tooltip = document.createElement('div');
+      tooltip.style.width = props.width;
       tooltip.innerHTML = `<span>${props.content}</span>`;
       tooltip.className = `lku-tooltip lku-tooltip__${props.placement}`;
       document.body.appendChild(tooltip);
@@ -90,7 +95,7 @@ export default {
           y: rect.y - tooltip.offsetHeight
         },
         'top': {
-          x: rect.x - (rect.width / 2),
+          x: rect.x - (tooltip.offsetWidth - rect.width) / 2,
           y: rect.y - tooltip.offsetHeight
         },
         'top-end': {
@@ -100,8 +105,41 @@ export default {
         'left-start': {
           x: rect.x - tooltip.offsetWidth,
           y: rect.y
-        }
+        },
+        'left': {
+          x: rect.x - tooltip.offsetWidth,
+          y: rect.y - rect.height / 2
+        },
+        'left-end': {
+          x: rect.x - tooltip.offsetWidth,
+          y: rect.y - (tooltip.offsetHeight - rect.height)
+        },
+        'right-start': {
+          x: rect.x + rect.width,
+          y: rect.y
+        },
+        'right': {
+          x: rect.x + rect.width,
+          y: rect.y - rect.height / 2
+        },
+        'right-end': {
+          x: rect.x + rect.width,
+          y: rect.y - (tooltip.offsetHeight - rect.height)
+        },
+        'bottom-start': {
+          x: rect.x,
+          y: rect.y + rect.height
+        },
+        'bottom': {
+          x: rect.x - (tooltip.offsetWidth - rect.width) / 2,
+          y: rect.y + rect.height
+        },
+        'bottom-end': {
+          x: rect.x - (tooltip.offsetWidth - rect.width),
+          y: rect.y + rect.height
+        },
       }
+      console.log(rect.x, tooltip.offsetWidth);
       return placement[key];
     }
     console.log(slots.default());
@@ -123,17 +161,15 @@ export default {
   &::after {
     content: "";
     position: absolute;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 5px solid @blank-color;
   }
 
   & > span {
     display: inline-block;
+    width: 100%;
     padding: 6px 10px;
     border-radius: 3px;
-    background-color: rgba(0, 0, 0, .9);
     color: @white-color;
+    background-color: rgba(0, 0, 0, .9);
     //user-select: none;
     //&::selection{
     //
@@ -141,10 +177,13 @@ export default {
   }
 
   &.lku-tooltip__top, &.lku-tooltip__top-start, &.lku-tooltip__top-end {
-    padding-bottom: 7px;
+    padding-bottom: 8px;
 
     &::after {
-      bottom: 2px;
+      bottom: 3px;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid @blank-color;
     }
   }
 
@@ -167,10 +206,95 @@ export default {
     }
   }
 
+  &.lku-tooltip__left-start, &.lku-tooltip__left, &.lku-tooltip__left-end {
+    padding-right: 7px;
+
+    &::after {
+      //transform: rotate(-90deg);
+      border-top: 4px solid transparent;
+      border-left: 5px solid @blank-color;
+      border-bottom: 4px solid transparent;
+    }
+  }
+
   &.lku-tooltip__left-start {
     &::after {
+      top: 10px;
+    }
+  }
+
+  &.lku-tooltip__left {
+    &::after {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  &.lku-tooltip__left-end {
+    &::after {
       bottom: 10px;
-      transform: rotate(-90deg);
+    }
+  }
+
+  // 右边
+  &.lku-tooltip__right-start, &.lku-tooltip__right, &.lku-tooltip__right-end {
+    padding-left: 8px;
+
+    &::after {
+      left: 3px;
+      border-top: 4px solid transparent;
+      border-right: 5px solid @blank-color;
+      border-bottom: 4px solid transparent;
+    }
+  }
+
+  &.lku-tooltip__right-start {
+    &::after {
+      top: 10px;
+    }
+  }
+
+  &.lku-tooltip__right {
+    &::after {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  &.lku-tooltip__right-end {
+    &::after {
+      bottom: 10px;
+    }
+  }
+
+  // 底部
+  &.lku-tooltip__bottom-start, &.lku-tooltip__bottom, &.lku-tooltip__bottom-end {
+    padding-top: 8px;
+
+    &::after {
+      top: 3px;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 5px solid @blank-color;
+    }
+  }
+
+  &.lku-tooltip__bottom-start {
+    &::after {
+      left: 10px;
+    }
+  }
+
+  &.lku-tooltip__bottom {
+    &::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  &.lku-tooltip__bottom-end {
+    &::after {
+      right: 10px;
     }
   }
 }
