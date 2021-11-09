@@ -59,7 +59,7 @@ export default {
       on(el, 'mouseleave', () => {
         timeId = setTimeout(() => {
           tooltip.style.display = 'none'
-        }, 500)
+        }, 200)
       })
 
 
@@ -73,7 +73,7 @@ export default {
           //document.body.click();
           tooltip.style.display = 'none';
           // document.body.removeChild(tooltip);
-        }, 500)
+        }, 200)
       })
 
       // on(document,'click',()=>{
@@ -108,7 +108,7 @@ export default {
         },
         'left': {
           x: rect.x - tooltip.offsetWidth,
-          y: rect.y - rect.height / 2
+          y: rect.y - (tooltip.offsetHeight - rect.height) / 2
         },
         'left-end': {
           x: rect.x - tooltip.offsetWidth,
@@ -120,7 +120,7 @@ export default {
         },
         'right': {
           x: rect.x + rect.width,
-          y: rect.y - rect.height / 2
+          y: rect.y - (tooltip.offsetHeight - rect.height) / 2
         },
         'right-end': {
           x: rect.x + rect.width,
@@ -157,6 +157,7 @@ export default {
   //cursor: pointer;
   z-index: 999;
   display: none;
+  transition: display ease-in-out 10s;
 
   &::after {
     content: "";
@@ -207,10 +208,10 @@ export default {
   }
 
   &.lku-tooltip__left-start, &.lku-tooltip__left, &.lku-tooltip__left-end {
-    padding-right: 7px;
+    padding-right: 8px;
 
     &::after {
-      //transform: rotate(-90deg);
+      right: 3px;
       border-top: 4px solid transparent;
       border-left: 5px solid @blank-color;
       border-bottom: 4px solid transparent;
@@ -298,6 +299,14 @@ export default {
     }
   }
 }
+
+//@keyframes translateTooltip {
+//  from {
+//    transform: translateX(5px);
+//  }
+//  to {
+//    transform: translateX(0);
+//  }
 
 
 </style>
