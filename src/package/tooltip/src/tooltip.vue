@@ -7,7 +7,7 @@
 import {getCurrentInstance, onMounted, nextTick} from 'vue'
 
 import {on, off, addClass, removeClass} from '@/utils/dom';
-
+import debounce from '@/utils/debounce';
 export default {
   name: "LkuTooltip",
   props: {
@@ -32,21 +32,22 @@ export default {
     onMounted(() => {
       const el = instance.proxy.$el;
       el.style.cursor = 'pointer';
+
       const rect = el.getBoundingClientRect();
-      tooltip = document.createElement('div');
-      tooltip.style.width = props.width;
-      tooltip.innerHTML = `<span>${props.content}</span>`;
-      tooltip.className = `lku-tooltip lku-tooltip__${props.placement}`;
-      document.body.appendChild(tooltip);
-      nextTick(() => {
-        console.log('nextTick执行了');
-      })
+      // const handle = debounce()
+      const handleMouseEnter = ()=>{
+
+      }
       on(el, 'mouseenter', (event) => {
-        console.log(rect);
-        //tooltip.style.top = event.pageY + 'px'
-        //showTooltip(el)
-        // let y = document.documentElement.scrollTop;
-        //y += rect.y + tooltip.offsetHeight;
+        if(!document.getElementById(`lku-tooltip-${instance.uid}`)){
+          tooltip = document.createElement('div');
+          tooltip.id = `lku-tooltip-${instance.uid}`;
+          tooltip.style.width = props.width;
+          tooltip.innerHTML = `<span>${props.content}</span>`;
+          tooltip.className = `lku-tooltip lku-tooltip__${props.placement}`;
+          document.body.appendChild(tooltip);
+        }
+        addClass(tooltip, 'lku-tooltip-show')
         tooltip.style.display = 'block';
         const {x, y} = calcPositionStyle(rect, tooltip, props.placement);
         tooltip.style.left = `${x}px`;
@@ -56,7 +57,12 @@ export default {
       //   tooltip.style.display = 'none'
       // })
       let timeId;
+      // on(el,'focus',()=>{
+      //   handleMouseEnter()
+      // })
       on(el, 'mouseleave', () => {
+        console.log(tooltip);
+        // removeClass(tooltip, 'lku-tooltip-show')
         timeId = setTimeout(() => {
           tooltip.style.display = 'none'
         }, 200)
@@ -64,12 +70,13 @@ export default {
 
 
       on(tooltip, 'mouseenter', () => {
+        debugger;
         tooltip.style.display = 'block';
         clearTimeout(timeId);
       })
 
       on(tooltip, 'mouseleave', () => {
-        setTimeout(() => {
+       setTimeout(() => {
           //document.body.click();
           tooltip.style.display = 'none';
           // document.body.removeChild(tooltip);
@@ -157,7 +164,7 @@ export default {
   //cursor: pointer;
   z-index: 999;
   display: none;
-  transition: display ease-in-out 10s;
+  transition: transform ease-in-out 2s;
 
   &::after {
     content: "";
@@ -298,7 +305,15 @@ export default {
       right: 10px;
     }
   }
+
+  &[class*='lku-tooltip__bottom'] {
+    transform: translateY(-5px) !important;
+
+
+  }
 }
+
+// 动画
 
 //@keyframes translateTooltip {
 //  from {
@@ -307,6 +322,5 @@ export default {
 //  to {
 //    transform: translateX(0);
 //  }
-
 
 </style>
