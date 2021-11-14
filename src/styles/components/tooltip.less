@@ -1,0 +1,236 @@
+.lku-tooltip {
+  position: fixed;
+  color: @primary-text-color;
+  z-index: 999;
+  opacity: 0;
+  max-width: 50%;
+  visibility: hidden;
+  word-break: break-all;
+  transition: transform ease .2s, opacity ease .2s, visibility ease .2s;
+
+  &.lku-tooltip__show {
+    opacity: 1;
+    visibility: visible;
+    display: block;
+  }
+
+  &::before, &::after {
+    content: "";
+    position: absolute;
+  }
+
+  & > span {
+    display: inline-block;
+    width: 100%;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: @white-color;
+    background-color: rgba(0, 0, 0, .9);
+  }
+
+  &.is-light > span {
+    border: 1px solid @lighter-border-color;
+    border-radius: 4px;
+    box-shadow: 0 2px 12px 0 rgba(232, 237, 250, 0.6);
+    color: @blank-color;
+    background-color: @white-color;
+  }
+
+  &.lku-tooltip__top, &.lku-tooltip__top-start, &.lku-tooltip__top-end {
+    padding-bottom: 8px;
+    transform: translateY(5px);
+
+    &::after {
+      bottom: 3px;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid @blank-color;
+    }
+
+    &.is-light::before {
+      bottom: 3px;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid @lighter-border-color;
+    }
+
+    &.is-light::after {
+      bottom: 4px;
+      border-top: 5px solid @white-color;
+    }
+  }
+
+  &.lku-tooltip__top {
+    &::after, &.is-light::before {
+      left: 50%;
+    }
+  }
+
+  &.lku-tooltip__top-start {
+    &::after, &.is-light::before {
+      left: 10px;
+    }
+  }
+
+  &.lku-tooltip__top-end {
+    &::after, &.is-light::before {
+      right: 10px;
+    }
+  }
+
+  &.lku-tooltip__left-start, &.lku-tooltip__left, &.lku-tooltip__left-end {
+    padding-right: 8px;
+
+    &::after, &.is-light::before {
+      right: 3px;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 5px solid @blank-color;
+    }
+
+    &.is-light::before {
+      border-left-color: @lighter-border-color;
+    }
+
+    &.is-light::after {
+      right: 4px;
+      border-left-color: @white-color;
+    }
+  }
+
+  &.lku-tooltip__left-start {
+    &::after, &.is-light::before {
+      top: 10px;
+    }
+  }
+
+  &.lku-tooltip__left {
+    &::after, &.is-light::before {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  &.lku-tooltip__left-end {
+    &::after, &.is-light::before {
+      bottom: 10px;
+    }
+  }
+
+  // 右边
+  &.lku-tooltip__right-start, &.lku-tooltip__right, &.lku-tooltip__right-end {
+    padding-left: 8px;
+
+    &::after, &.is-light::before {
+      left: 3px;
+      border-top: 4px solid transparent;
+      border-right: 5px solid @blank-color;
+      border-bottom: 4px solid transparent;
+    }
+
+    &.is-light::before {
+      border-right-color: @lighter-border-color;
+    }
+
+    &.is-light::after {
+      left: 4px;
+      border-right-color: @white-color;
+    }
+  }
+
+  &.lku-tooltip__right-start {
+    &::after, &.is-light::before {
+      top: 10px;
+    }
+  }
+
+  &.lku-tooltip__right {
+    &::after, &.is-light::before {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  &.lku-tooltip__right-end {
+    &::after, &.is-light::before {
+      bottom: 10px;
+    }
+  }
+
+  // 底部
+  &.lku-tooltip__bottom-start, &.lku-tooltip__bottom, &.lku-tooltip__bottom-end {
+    padding-top: 8px;
+
+    &::after, &.is-light::before {
+      top: 3px;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 5px solid @blank-color;
+    }
+
+    &.is-light::before {
+      border-bottom-color: @lighter-border-color;
+    }
+
+    &.is-light::after {
+      top: 4px;
+      border-bottom-color: @white-color;
+    }
+
+  }
+
+  &.lku-tooltip__bottom-start {
+    &::after, &.is-light::before {
+      left: 10px;
+    }
+  }
+
+  &.lku-tooltip__bottom {
+    &::after, &.is-light::before {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  &.lku-tooltip__bottom-end {
+    &::after, &.is-light::before {
+      right: 10px;
+    }
+  }
+
+  //上面位置出现的动画
+  &[class*='lku-tooltip__top'] {
+    transform: translateY(-5px);
+
+    &.lku-tooltip__show {
+      transform: translateY(0);
+    }
+  }
+
+  // 下
+  &[class*='lku-tooltip__bottom'] {
+    transform: translateY(5px);
+
+    &.lku-tooltip__show {
+      transform: translateY(0);
+    }
+  }
+
+  // 左
+  &[class*='lku-tooltip__left'] {
+    transform: translateX(-5px);
+
+    &.lku-tooltip__show {
+      transform: translateX(0);
+    }
+  }
+
+  // 右
+  &[class*='lku-tooltip__right'] {
+    transform: translateX(5px);
+
+    &.lku-tooltip__show {
+      transform: translateX(0);
+    }
+  }
+}

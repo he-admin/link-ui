@@ -1,16 +1,17 @@
-<!--<template>-->
-<!--  <slot></slot>-->
-<!--</template>-->
-
-
 <script>
-import {getCurrentInstance, onMounted, nextTick} from 'vue'
+import {ref, watch, getCurrentInstance, onMounted, nextTick} from 'vue'
 
 import {on, off, addClass, removeClass} from '@/utils/dom';
 import debounce from '@/utils/debounce';
+
 export default {
   name: "LkuTooltip",
   props: {
+    theme: {
+      type: String,
+      default: 'dark',
+      validator: (val) => ['dark', 'light'].includes(val)
+    },
     placement: {
       type: String,
       default: 'top'
@@ -21,79 +22,91 @@ export default {
     },
     width: {
       type: String,
-      default: '200px'
+      default: 'fit-content' // 默认宽度取决于内容宽度
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, {slots}) {
     const instance = getCurrentInstance();
-    console.log(slots.default());
+    const isHover = ref(false);
     let tooltip = null;
-
-    onMounted(() => {
-      const el = instance.proxy.$el;
-      el.style.cursor = 'pointer';
-
-      const rect = el.getBoundingClientRect();
-      // const handle = debounce()
-      const handleMouseEnter = ()=>{
-
+    watch(() => {
+      return isHover.value
+    }, (newVal) => {
+      newVal ? showTooltip() : hideTooltip();
+      // const move = (e) => {
+      //   e.preventDefault();
+      // }
+      // 如果隐藏，就清除tooltip的选中状态
+      if (!newVal) {
+        window.getSelection().empty();
+        // document.body.style.overflow = '';
+        // window.removeEventListener('mousewheel', move);
       }
-      on(el, 'mouseenter', (event) => {
-        if(!document.getElementById(`lku-tooltip-${instance.uid}`)){
-          tooltip = document.createElement('div');
-          tooltip.id = `lku-tooltip-${instance.uid}`;
-          tooltip.style.width = props.width;
-          tooltip.innerHTML = `<span>${props.content}</span>`;
-          tooltip.className = `lku-tooltip lku-tooltip__${props.placement}`;
-          document.body.appendChild(tooltip);
-        }
-        addClass(tooltip, 'lku-tooltip-show')
-        tooltip.style.display = 'block';
-        const {x, y} = calcPositionStyle(rect, tooltip, props.placement);
-        tooltip.style.left = `${x}px`;
-        tooltip.style.top = `${y}px`;
-      })
-      // on(tooltip, 'mouseleave', () => {
-      //   tooltip.style.display = 'none'
-      // })
-      let timeId;
-      // on(el,'focus',()=>{
-      //   handleMouseEnter()
-      // })
-      on(el, 'mouseleave', () => {
-        console.log(tooltip);
-        // removeClass(tooltip, 'lku-tooltip-show')
-        timeId = setTimeout(() => {
-          tooltip.style.display = 'none'
-        }, 200)
-      })
-
-
-      on(tooltip, 'mouseenter', () => {
-        debugger;
-        tooltip.style.display = 'block';
-        clearTimeout(timeId);
-      })
-
-      on(tooltip, 'mouseleave', () => {
-       setTimeout(() => {
-          //document.body.click();
-          tooltip.style.display = 'none';
-          // document.body.removeChild(tooltip);
-        }, 200)
-      })
-
-      // on(document,'click',()=>{
-      //   debugger
-      // })
+      if (newVal) {
+        // document.body.style.overflow = 'hidden';
+        // document.body.addEventListener('touchmove', move);
+      }
     })
-    const handleMouseEnter = () => {
+    onMounted(() => {
+      let timeId;
+      const el = instance.proxy.$el;
+      if (props.disabled) {
+        return
+      }
+      const handleElMouseEnter = () => {
+        renderTooltip(el);
+        isHover.value = true;
+        clearTimeout(timeId);
+      }
 
+      // 给内容dom和tooltip绑定鼠标进入和离开事件
+      on(el, 'mouseenter', (event) => {
+        debounce(handleElMouseEnter, 1000, true)()
+        // 之所以要嵌套绑定事件，是因为只有等到el触发mouseenter事件，
+        // 生成tooltip的dom之后，才能给tooltip绑定事件
+        on(tooltip, 'mouseenter', () => {
+          clearTimeout(timeId);
+          isHover.value = true;
+        })
+
+        on(tooltip, 'mouseleave', () => {
+          isHover.value = false;
+        })
+      })
+
+      on(el, 'mouseleave', () => {
+        timeId = setTimeout(() => {
+          isHover.value = false;
+        }, 200)
+      })
+    })
+
+    const renderTooltip = (el) => {
+      const rect = el.getBoundingClientRect();
+      if (!document.getElementById(`lku-tooltip-${instance.uid}`)) {
+        tooltip = document.createElement('div');
+        tooltip.id = `lku-tooltip-${instance.uid}`;
+        tooltip.style.width = props.width;
+        tooltip.innerHTML = `<span>${props.content}</span>`;
+        tooltip.className = `lku-tooltip lku-tooltip__${props.placement} is-${props.theme}`;
+        document.body.appendChild(tooltip);
+      }
+      const {x, y} = calcPositionStyle(rect, tooltip, props.placement);
+      tooltip.style.left = `${x}px`;
+      tooltip.style.top = `${y}px`;
     }
 
     const showTooltip = () => {
-      tooltip && addClass(tooltip, 'lku-show__tooltip')
+      tooltip && addClass(tooltip, 'lku-tooltip__show')
+    };
+    const hideTooltip = () => {
+      tooltip && removeClass(tooltip, 'lku-tooltip__show')
     }
+
     // 通过配置不同的位置选项，计算tooltip对应的坐标
     const calcPositionStyle = (rect, tooltip, key) => {
       const placement = {
@@ -149,7 +162,6 @@ export default {
       console.log(rect.x, tooltip.offsetWidth);
       return placement[key];
     }
-    console.log(slots.default());
     return () => {
       return slots.default()[0];
     }
@@ -157,170 +169,3 @@ export default {
   }
 }
 </script>
-<style lang="less">
-.lku-tooltip {
-  position: absolute;
-  color: @primary-text-color;
-  //cursor: pointer;
-  z-index: 999;
-  display: none;
-  transition: transform ease-in-out 2s;
-
-  &::after {
-    content: "";
-    position: absolute;
-  }
-
-  & > span {
-    display: inline-block;
-    width: 100%;
-    padding: 6px 10px;
-    border-radius: 3px;
-    color: @white-color;
-    background-color: rgba(0, 0, 0, .9);
-    //user-select: none;
-    //&::selection{
-    //
-    //}
-  }
-
-  &.lku-tooltip__top, &.lku-tooltip__top-start, &.lku-tooltip__top-end {
-    padding-bottom: 8px;
-
-    &::after {
-      bottom: 3px;
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
-      border-top: 5px solid @blank-color;
-    }
-  }
-
-  &.lku-tooltip__top {
-    &::after {
-      left: 50%;
-      //transform: translateX(-50%);
-    }
-  }
-
-  &.lku-tooltip__top-start {
-    &::after {
-      left: 10px;
-    }
-  }
-
-  &.lku-tooltip__top-end {
-    &::after {
-      right: 10px;
-    }
-  }
-
-  &.lku-tooltip__left-start, &.lku-tooltip__left, &.lku-tooltip__left-end {
-    padding-right: 8px;
-
-    &::after {
-      right: 3px;
-      border-top: 4px solid transparent;
-      border-left: 5px solid @blank-color;
-      border-bottom: 4px solid transparent;
-    }
-  }
-
-  &.lku-tooltip__left-start {
-    &::after {
-      top: 10px;
-    }
-  }
-
-  &.lku-tooltip__left {
-    &::after {
-      top: 50%;
-      transform: translateY(-50%);
-    }
-  }
-
-  &.lku-tooltip__left-end {
-    &::after {
-      bottom: 10px;
-    }
-  }
-
-  // 右边
-  &.lku-tooltip__right-start, &.lku-tooltip__right, &.lku-tooltip__right-end {
-    padding-left: 8px;
-
-    &::after {
-      left: 3px;
-      border-top: 4px solid transparent;
-      border-right: 5px solid @blank-color;
-      border-bottom: 4px solid transparent;
-    }
-  }
-
-  &.lku-tooltip__right-start {
-    &::after {
-      top: 10px;
-    }
-  }
-
-  &.lku-tooltip__right {
-    &::after {
-      top: 50%;
-      transform: translateY(-50%);
-    }
-  }
-
-  &.lku-tooltip__right-end {
-    &::after {
-      bottom: 10px;
-    }
-  }
-
-  // 底部
-  &.lku-tooltip__bottom-start, &.lku-tooltip__bottom, &.lku-tooltip__bottom-end {
-    padding-top: 8px;
-
-    &::after {
-      top: 3px;
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
-      border-bottom: 5px solid @blank-color;
-    }
-  }
-
-  &.lku-tooltip__bottom-start {
-    &::after {
-      left: 10px;
-    }
-  }
-
-  &.lku-tooltip__bottom {
-    &::after {
-      left: 50%;
-      transform: translateX(-50%);
-    }
-  }
-
-  &.lku-tooltip__bottom-end {
-    &::after {
-      right: 10px;
-    }
-  }
-
-  &[class*='lku-tooltip__bottom'] {
-    transform: translateY(-5px) !important;
-
-
-  }
-}
-
-// 动画
-
-//@keyframes translateTooltip {
-//  from {
-//    transform: translateX(5px);
-//  }
-//  to {
-//    transform: translateX(0);
-//  }
-
-</style>

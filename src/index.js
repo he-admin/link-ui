@@ -7,6 +7,7 @@ import './styles/components/input.less';
 import './styles/components/form.less';
 import './styles/components/drawer.less';
 import './styles/components/modal.less';
+import './styles/components/tooltip.less';
 
 import {LkuSelect, LkuOptionGroup, LkuOption} from './package/select'
 import LkuMenu from './package/menu';
@@ -27,7 +28,7 @@ import LkuTooltip from './package/tooltip/index';
 const components = [LkuSelect, LkuOptionGroup, LkuOption, LkuMenu, LkuMenuGroup,
   LkuMenuItem, LkuCollapseTransition, LkuSwitch, LkuCheckbox, LkuCheckboxGroup,
   LkuRadio, LkuRadioGroup, LkuInput, LkuForm, LkuFormItem, LkuButton, LkuIcon,
-  LkuDrawer, LkuModal,LkuTooltip];
+  LkuDrawer, LkuModal, LkuTooltip];
 
 const install = (Vue) => {
   components.forEach((component) => {
