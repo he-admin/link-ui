@@ -1,5 +1,5 @@
 <script>
-import {ref, watch, getCurrentInstance, onMounted, nextTick} from 'vue'
+import {ref, watch, getCurrentInstance, onMounted, onUnmounted} from 'vue'
 
 import {on, off, addClass, removeClass} from '@/utils/dom';
 import debounce from '@/utils/debounce';
@@ -31,73 +31,98 @@ export default {
   },
   setup(props, {slots}) {
     const instance = getCurrentInstance();
+    const tooltipId = ref('');
     const isHover = ref(false);
     let tooltip = null;
+    let timeId;
+    let el = null;
     watch(() => {
       return isHover.value
     }, (newVal) => {
       newVal ? showTooltip() : hideTooltip();
-      // const move = (e) => {
-      //   e.preventDefault();
-      // }
       // 如果隐藏，就清除tooltip的选中状态
       if (!newVal) {
         window.getSelection().empty();
-        // document.body.style.overflow = '';
-        // window.removeEventListener('mousewheel', move);
-      }
-      if (newVal) {
-        // document.body.style.overflow = 'hidden';
-        // document.body.addEventListener('touchmove', move);
       }
     })
     onMounted(() => {
-      let timeId;
-      const el = instance.proxy.$el;
+      el = instance.proxy.$el;
       if (props.disabled) {
         return
       }
-      const handleElMouseEnter = () => {
-        renderTooltip(el);
-        isHover.value = true;
-        clearTimeout(timeId);
-      }
-
       // 给内容dom和tooltip绑定鼠标进入和离开事件
-      on(el, 'mouseenter', (event) => {
-        debounce(handleElMouseEnter, 1000, true)()
-        // 之所以要嵌套绑定事件，是因为只有等到el触发mouseenter事件，
-        // 生成tooltip的dom之后，才能给tooltip绑定事件
-        on(tooltip, 'mouseenter', () => {
-          clearTimeout(timeId);
-          isHover.value = true;
-        })
+      on(el, 'mouseenter', handleElMouseEnter)
+      // 之所以要嵌套绑定事件，是因为只有等到el触发mouseenter事件，
+      // 生成tooltip的dom之后，才能给tooltip绑定事件
+      on(el, 'mouseleave', handleElMouseLeave)
 
-        on(tooltip, 'mouseleave', () => {
-          isHover.value = false;
-        })
-      })
-
-      on(el, 'mouseleave', () => {
-        timeId = setTimeout(() => {
-          isHover.value = false;
-        }, 200)
+      // 当tooltipId不为空时，即dom存在时，再为其绑定事件
+      watch(() => {
+        return tooltipId.value
+      }, (val) => {
+        if (val) {
+          on(tooltip, 'mouseenter', handleTooltipMouseEnter)
+          on(tooltip, 'mouseleave', handleTooltipMouseLeave)
+        }
       })
     })
+
+    onUnmounted(() => {
+      off(el, 'mouseenter', handleElMouseEnter);
+      off(el, 'mouseleave', handleElMouseLeave);
+      off(tooltip, 'mouseenter', handleTooltipMouseEnter);
+      off(tooltip, 'mouseleave', handleTooltipMouseLeave);
+    })
+    // const handleElMouseEnter = debounce(() => {
+    //   renderTooltip(el);
+    //   isHover.value = true;
+    //   clearTimeout(timeId);
+    // }, 1000, true);
+    const handleElMouseEnter = () => {
+      renderTooltip(el);
+      isHover.value = true;
+      clearTimeout(timeId);
+    }
+
+    const handleElMouseLeave = () => {
+      timeId = setTimeout(() => {
+        isHover.value = false;
+      }, 200)
+    };
+
+    const handleTooltipMouseEnter = () => {
+      clearTimeout(timeId);
+      isHover.value = true;
+      document.body.style.overflow = 'hidden';
+      document.body.addEventListener('touchmove', move);
+    };
+
+    const handleTooltipMouseLeave = () => {
+      isHover.value = false;
+      document.body.style.overflow = '';
+      document.body.addEventListener('touchmove', move);
+    }
+
+    const move = (e) => {
+      e.preventDefault();
+    }
 
     const renderTooltip = (el) => {
       const rect = el.getBoundingClientRect();
       if (!document.getElementById(`lku-tooltip-${instance.uid}`)) {
         tooltip = document.createElement('div');
-        tooltip.id = `lku-tooltip-${instance.uid}`;
+        tooltip.id = tooltipId.value = `lku-tooltip-${instance.uid}`;
         tooltip.style.width = props.width;
         tooltip.innerHTML = `<span>${props.content}</span>`;
         tooltip.className = `lku-tooltip lku-tooltip__${props.placement} is-${props.theme}`;
         document.body.appendChild(tooltip);
       }
+      // 滚动条距离浏览器顶部/左边的距离(考虑有滚动条时，定位问题)
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollLeft = document.documentElement.scrollLeft;
       const {x, y} = calcPositionStyle(rect, tooltip, props.placement);
-      tooltip.style.left = `${x}px`;
-      tooltip.style.top = `${y}px`;
+      tooltip.style.left = `${x + scrollLeft}px`;
+      tooltip.style.top = `${y + scrollTop}px`;
     }
 
     const showTooltip = () => {
@@ -159,7 +184,6 @@ export default {
           y: rect.y + rect.height
         },
       }
-      console.log(rect.x, tooltip.offsetWidth);
       return placement[key];
     }
     return () => {
