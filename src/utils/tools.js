@@ -1,3 +1,5 @@
+import {ulid} from 'ulid';
+
 // 检测是否符合传的类型,checkType返回的是一个函数
 const checkType = (type) => (val) => {
   const valueType = Object.prototype.toString.call(val).slice(8, -1);
@@ -15,9 +17,12 @@ const formatSize = (val) => {
   return isNaN(Number(val)) ? val : `${val}px`;
 }
 
+// 生成ULID
+const createULID = () => ulid();
 export {
   isArray,
   isFunction,
   isObject,
-  formatSize
+  formatSize,
+  createULID
 }

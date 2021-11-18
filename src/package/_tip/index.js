@@ -1,23 +1,25 @@
 import {createApp, h, render} from 'vue';
 import LkuTips from './src/tip';
 
-console.log(render);
 
 const init = (props = {type: 'message', test: 1231}) => {
-  const app = createApp({
-    render() {
-      return h(LkuTips, {...props})
-    }
-  })
-  let messageDom = document.createDocumentFragment();
-  // 把message组件挂载在空dom上，空dom会被解析成message的真实dom。
-  app.mount(messageDom);
-  document.body.appendChild(messageDom)
-  return app.component;
-  // const vNode = h(LkuTips, {type: 'message', test: 1231})
-  // render(vNode, document.createElement('div'))
-  //
-  // document.body.appendChild(vNode.component.vnode.el);
+ //  const app = createApp({
+ //    render() {
+ //      return h(LkuTips, {...props})
+ //    }
+ //  })
+ //  let messageDom = document.createDocumentFragment();
+ //  // 把message组件挂载在空dom上，空dom会被解析成message的真实dom。
+ //  let instance = app.mount(messageDom);
+ //  document.body.appendChild(messageDom);
+ //  console.log(instance,app);
+ // return app.component;
+
+  const vNode = h(LkuTips)
+  render(vNode, document.createElement('div'))
+  document.body.appendChild(vNode.component.vnode.el);
+  return vNode.component.setupState
+  // console.log(vNode.component);
   // console.log(vNode.component.vnode.el);
 
   // console.log(app.mount(document.body));

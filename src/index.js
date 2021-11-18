@@ -31,10 +31,13 @@ const components = [LkuSelect, LkuOptionGroup, LkuOption, LkuMenu, LkuMenuGroup,
   LkuRadio, LkuRadioGroup, LkuInput, LkuForm, LkuFormItem, LkuButton, LkuIcon,
   LkuDrawer, LkuModal, LkuTooltip, LkuMessage];
 
+const globalProperties = [LkuMessage];
+
 const install = (Vue) => {
   components.forEach((component) => {
-    Vue.component(component.name, component)
+    Vue.component(component.name, component);
   })
+  Vue.config.globalProperties['$message'] = LkuMessage;
 }
 
 // if (typeof window !== 'undefined' && window.Vue) {
