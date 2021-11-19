@@ -12,34 +12,39 @@ console.log(message);
 const createMessage = (type, config) => {
 //config.uid = instance.uid;
 
- if(!isObject(config)){
-   config.title = config
- }
+  if (!isObject(config)) {
+    config.title = config
+  }
   const defaultConfig = {
     title: '',
     render: '',
-    duration: 1500000,
+    duration: 1500,
     closeable: false,
     onShow: () => {
     },
     onClose: () => {
     }
   }
-
   const currentMessage = message.addTip(type, Object.assign(defaultConfig, config));
   console.log(currentMessage);
+  return currentMessage;
 }
 
 export default {
   name: 'LkuMessage',
   message(type, config) {
-    createMessage(type, config)
+    return createMessage(type, config)
+  },
+  info(config) {
+    return this.message('info', config)
   },
   success(config) {
     this.message('success', config)
   },
-  setup() {
-    const instance = getCurrentInstance();
-    console.log(instance);
+  error(config) {
+    this.message('error', config)
+  },
+  warning(config) {
+    this.message('warning', config)
   }
 }

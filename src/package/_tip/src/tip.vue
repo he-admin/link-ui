@@ -4,7 +4,7 @@
       <li v-for="item in tips" :key="item.ulid" :class="tipItemClass(item)">
         <div class="lku-tips__item-wrapper">
           <div class="lku-tips__item-content">
-            <lku-icon :type="item.icon"></lku-icon>
+            <lku-icon :type="item.icon" class="lku-tips__icon-type"></lku-icon>
             <div class="lku-tips__info">
               <div class="lku-tips__title">
                 <template v-if="type==='message' && item.render">
@@ -61,10 +61,10 @@ export default {
         return [
           `${TIPS}__item`,
           {
-            [`${TIPS}--info`]: item.type === 'info',
-            [`${TIPS}--error`]: item.type === 'error',
-            [`${TIPS}--success`]: item.type === 'success',
-            [`${TIPS}--warning`]: item.type === 'warning',
+            [`${TIPS}__info`]: item.type === 'info',
+            [`${TIPS}__error`]: item.type === 'error',
+            [`${TIPS}__success`]: item.type === 'success',
+            [`${TIPS}__warning`]: item.type === 'warning',
           },
         ];
       }
@@ -91,7 +91,7 @@ export default {
     }
 
     const removeTip = (config) => {
-      tips.value = tips.value.filter(tip => tip.uid !== config.uid);
+      tips.value = tips.value.filter(tip => tip.ulid !== config.ulid);
       isFunction(config.onClose) && config.onClose;
     }
     return {tips, isNotice, tipItemClass, addTip, removeTip}
@@ -123,7 +123,8 @@ export default {
   .lku-tips__item {
     margin-bottom: 12px;
     pointer-events: all;
-    text-align: center
+    text-align: center;
+    //transition: translate .3s ease;
   }
 
   .lku-tips__item-wrap {
@@ -158,17 +159,13 @@ export default {
     }
   }
 
-  .lku-tips__icon-type {
-    margin-top: -1px;
-  }
-
   .lku-tips__info {
     .lku-tips__icon-type {
       color: @primary-color;
     }
   }
 
-  .lku-tip__success {
+  .lku-tips__success {
     .lku-tips__icon-type {
       color: @success-color;
     }
@@ -208,12 +205,11 @@ export default {
 /* 动画 */
 .lku-tips-transition-enter-active,
 .lku-tips-transition-leave-active {
-  transition: opacity .38s, transform .38s;
+  transition: opacity .3s, transform .3s;
 }
 
 .lku-tips-transition-enter-from,
-.lku-tips-transition-leave-to,
-.lku-tips-transition-leave-active {
+.lku-tips-transition-leave-to{
   opacity: 0;
   transform: translateY(-50px);
 }
