@@ -1,14 +1,14 @@
-## Message组件
+## Notice组件
 
 ### 基本使用
 :::demo
 ```html
 <template>
   <div>
-    <lku-button @click="openMessage('info')">info类型通知</lku-button>
-    <lku-button @click="openMessage('error')">error类型通知</lku-button>
-    <lku-button @click="openMessage('success')">success类型通知</lku-button>
-    <lku-button @click="openMessage('warning')">warning类型通知</lku-button>
+    <lku-button @click="openNotice('info')">info类型通知</lku-button>
+    <lku-button @click="openNotice('error')">error类型通知</lku-button>
+    <lku-button @click="openNotice('success')">success类型通知</lku-button>
+    <lku-button @click="openNotice('warning')">warning类型通知</lku-button>
   </div>
 </template>
 <script>
@@ -17,12 +17,12 @@ import {getCurrentInstance} from 'vue'
 export default {
   setup() {
     const instance = getCurrentInstance();
-    const {$message} = instance.appContext.config.globalProperties
-    const openMessage = (type) => {
-      $message[type]({duration: 2000, title: `这是一条${type}消息，默认1.5s之后隐藏`, closeable: true});
+    const {$notice} = instance.appContext.config.globalProperties
+    const openNotice = (type) => {
+      $notice[type]({duration: 2000, title: `这是一条${type}消息，默认1.5s之后隐藏`, content:'这是notice组件的content内容',closeable: true});
     }
 
-    return {openMessage}
+    return {openNotice}
   }
 }
 </script>
@@ -45,18 +45,18 @@ import {getCurrentInstance} from 'vue';
 export default {
   setup() {
     const instance = getCurrentInstance();
-    const {$message} = instance.appContext.config.globalProperties;
+    const {$notice} = instance.appContext.config.globalProperties;
     const message1 = () => {
-      $message.success('这是一条默认的1.5s提示')
+      $notice.success('这是一条默认的1.5s提示')
     };
     const message2 = () => {
-      $message.success({
+      $notice.success({
         title: '这是一条3s后关闭的提示',
         duration: 3000
       })
     }
     const message3 = () => {
-      $message.success({
+      $notice.success({
         title: '这是一条不会自动关闭的提示',
         duration: 0,
         closeable: true
@@ -90,10 +90,10 @@ import { getCurrentInstance } from 'vue'
 export default {
   setup() {
     const instance = getCurrentInstance();
-    const {$message} = instance.appContext.config.globalProperties;
+    const {$notice} = instance.appContext.config.globalProperties;
     const message = () => {
       const html = `本次共提交<i style="color: red;"> 666 </i>条数据`
-      $message.success({render: html})
+      $notice.success({render: html})
     }
     return {message}
   }
@@ -106,7 +106,8 @@ export default {
 
 | 参数      | 说明                                                          | 类型     | 可选值 | 默认值 | 必填 |
 | :-------- | :------------------------------------------------------------ | :------- | :----- | :----- | :--- |
-| title   | 提示的标题内容                                                | String   | -      | -      | 否   |
+| title   | 提示的标题                                               | String   | -      | -      | 否   |
+| content   | 提示的内容                                                | String   | -      | -      | 否   |
 | render    | 以v-html方式渲染render的内容，设置该属性时自动忽略content内容 | String   | -      | -      | 否   |
 | duration  | 提示的时间                                                    | Number   | -      | 1500   | 否   |
 | closeable | 是否显示关闭按钮                                              | Boolean  | -      | false  | 否   |
@@ -116,5 +117,5 @@ export default {
 ### Message 实例方法
 | 方法名 | 说明                | 参数 |
 | :----- | :------------------ | :--- |
-| close  | 关闭当前message实例 | -    |
+| close  | 关闭当前notice实例 | -    |
 

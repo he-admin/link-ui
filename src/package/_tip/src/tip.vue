@@ -1,12 +1,16 @@
 <template>
   <div :class="['lku-tips__wrapper',{'lku-tips__notice':isNotice}]">
-    <transition-group class="lku-tips__content" tag="ul" name="lku-tips-transition">
+    <transition-group class="lku-tips__content"
+                      @enter="handleEnter"
+                      @leave="handleLeave"
+                      tag="ul"
+                      :name="type==='message'?'lku-tips-message-transition': 'lku-tips-notice-transition'">
       <li v-for="item in tips" :key="item.ulid" :class="tipItemClass(item)">
         <div class="lku-tips__item-wrapper">
           <div class="lku-tips__item-content">
             <lku-icon :type="item.icon" class="lku-tips__icon-type"></lku-icon>
             <div class="lku-tips__info">
-              <div class="lku-tips__title">
+              <div :class="['lku-tips__title',{'lku-bold': item.content || item.render}]">
                 <template v-if="type==='message' && item.render">
                   <p v-html="item.render"></p>
                 </template>
@@ -14,7 +18,8 @@
                   {{ item.title }}
                 </template>
               </div>
-              <div class="lku-tips__desc" v-if="type==='notice' &&(item.render || item.content)">
+              <div class="lku-tips__desc"
+                   v-if="type==='notice' &&(item.render || item.content)">
                 <template v-if="item.render">
                   <p v-html="item.render"></p>
                 </template>
@@ -23,6 +28,11 @@
                 </template>
               </div>
             </div>
+            <lku-icon type="close"
+                      @click="removeTip(item)"
+                      v-if="item.closeable"
+                      class-name="lku-tips__icon-close">
+            </lku-icon>
           </div>
         </div>
       </li>
@@ -31,7 +41,7 @@
 </template>
 
 <script>
-import {ref, computed, getCurrentInstance} from 'vue';
+import {ref, computed} from 'vue';
 import {isFunction, createULID} from '@/utils/tools';
 import LkuIcon from '../../icon';
 
@@ -53,7 +63,7 @@ export default {
   setup(props) {
     const tips = ref([]);
     const isNotice = computed(() => {
-      return props.type
+      return props.type === 'notice'
     })
     const tipItemClass = computed(() => {
       const TIPS = 'lku-tips';
@@ -94,7 +104,14 @@ export default {
       tips.value = tips.value.filter(tip => tip.ulid !== config.ulid);
       isFunction(config.onClose) && config.onClose;
     }
-    return {tips, isNotice, tipItemClass, addTip, removeTip}
+    const handleEnter = (el) => {
+      el.style = 'transition: opacity .3s, transform .3s;'
+    };
+    const handleLeave = (el) => {
+      el.style = 'transition: opacity .3s, transform .3s;'
+    };
+
+    return {tips, isNotice, tipItemClass, addTip, removeTip, handleEnter, handleLeave}
   }
 }
 </script>
@@ -127,13 +144,13 @@ export default {
     //transition: translate .3s ease;
   }
 
-  .lku-tips__item-wrap {
+  .lku-tips__item-wrapper {
     display: inline-block;
   }
 
   .lku-tips__item-content {
     display: flex;
-    align-items: center;
+    //align-items: center;
     flex-direction: row;
     padding: 8px 14px;
     border-radius: 4px;
@@ -142,6 +159,7 @@ export default {
 
     .lku-tips__icon-type {
       margin-right: 4px;
+      margin-top: -1px;
     }
   }
 
@@ -185,14 +203,14 @@ export default {
 }
 
 /* notice特殊的样式 */
-.lku-tips-notice {
+.lku-tips__notice {
   text-align: right;
 
   .lku-tips__item-wrap {
     width: 300px;
   }
 
-  .lku--isBold {
+  .lku-Bold {
     font-weight: bold;
   }
 
@@ -203,15 +221,24 @@ export default {
 }
 
 /* 动画 */
-.lku-tips-transition-enter-active,
+.lku-tips-transition-message-enter-active,
 .lku-tips-transition-leave-active {
   transition: opacity .3s, transform .3s;
 }
 
-.lku-tips-transition-enter-from,
-.lku-tips-transition-leave-to{
+.lku-tips-message-transition-enter-from,
+.lku-tips-message-transition-leave-to {
   opacity: 0;
   transform: translateY(-50px);
 }
 
+.lku-tips-notice-transition-enter-from {
+  opacity: 0;
+  transform: translateX(200px);
+}
+
+.lku-tips-notice-transition-leave-to {
+  opacity: 0;
+  transform: translateY(-50px);
+}
 </style>
