@@ -21,7 +21,7 @@ const createMessage = (type, config) => {
   const currentMessage = message.addTip(type, Object.assign(defaultConfig, config));
   // 实现调用$message.xxx()时，返回当前实例，通过当前实例，调用close方法，关闭message
   const close = () => {
-    message.removeTip(currentMessage)
+    message.removeTip(currentMessage);
   };
   return {close, ...currentMessage};
 }
