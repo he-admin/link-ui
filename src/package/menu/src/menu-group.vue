@@ -2,12 +2,10 @@
   <li class="lku-menu-group">
     <div class="lku-menu-group__title" @click="isOpen=!isOpen">
       {{ title }}
-<!--      <lku-collapse-transition>-->
-<!--        <i :class="iconArrowClasses"></i>-->
-<!--      </lku-collapse-transition>-->
+      <i :class="iconArrowClasses"></i>
     </div>
     <lku-collapse-transition>
-      <ul v-if="isOpen">
+      <ul v-show="isOpen">
         <slot></slot>
       </ul>
     </lku-collapse-transition>
@@ -15,7 +13,6 @@
 </template>
 
 <script>
-//import LkuCollapseTransition from '../../collapse-transition/transition';
 import {ref, computed} from 'vue'
 
 export default {
@@ -40,9 +37,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less" >
-.lku-icon__arrow--up {
-  //transform: translateY(-50%) rotateX(180deg);
-}
-</style>
