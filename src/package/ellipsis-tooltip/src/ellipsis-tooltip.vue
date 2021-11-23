@@ -1,13 +1,13 @@
 <template>
-  <lku-tooltip :content="content" :disabled="disabled">
+  <lku-tooltip :content="content" :disabled="disabled" v-bind="$attrs">
     <div :class="multiple?'lku-global__multiple-ellipsis':'lku-global-ellipsis'"
          ref="ellipsis"
-         :style="ellipsisStyle">{{ content + disabled }}
+         :style="ellipsisStyle">{{ content }}
     </div>
   </lku-tooltip>
 </template>
 <script>
-import {ref, computed, onMounted} from 'vue';
+import {ref, computed, onMounted, onUnmounted} from 'vue';
 
 export default {
   name: "LkuEllipsisTooltip",
@@ -25,6 +25,9 @@ export default {
     line: {
       type: Number,
       default: 3
+    },
+    disabled: {
+
     }
   },
   setup(props, {slots}) {
@@ -32,6 +35,7 @@ export default {
     const disabled = ref(false);
     let content = '';
     content = slots?.default()[0]?.children ?? ''
+
     const ellipsisStyle = computed(() => {
       const style = {width: props.width || 'fit-content', maxWidth: '100%'};
       if (props.multiple && props.line) {
@@ -39,16 +43,18 @@ export default {
       }
       return style;
     })
+
     onMounted(() => {
       showTooltip();
-      window.addEventListener('resize',()=>{
-        showTooltip();
-      })
+      window.addEventListener('resize', showTooltip);
     })
-    const showTooltip = ()=>{
+    onUnmounted(() => {
+      window.removeEventListener('resize', showTooltip)
+    })
+
+    const showTooltip = () => {
       const offsetWidth = ellipsis.value?.offsetWidth;
       const scrollWidth = ellipsis.value?.scrollWidth;
-
       if (props.width) {
         const width = props.width.split('px')[0];
         disabled.value = scrollWidth <= width
@@ -58,9 +64,7 @@ export default {
       if (props.multiple) {
         const offsetHeight = ellipsis.value?.offsetHeight;
         const scrollHeight = ellipsis.value?.scrollHeight;
-        console.log(offsetHeight, scrollHeight);
         disabled.value = offsetHeight >= scrollHeight
-        console.log(offsetHeight >= scrollHeight, disabled.value);
       }
     }
     return {disabled, content, ellipsisStyle, ellipsis}
