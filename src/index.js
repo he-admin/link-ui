@@ -27,11 +27,14 @@ import LkuTooltip from './package/tooltip';
 import LkuMessage from './package/message';
 import LkuNotice from './package/notice';
 import LkuEllipsisTooltip from './package/ellipsis-tooltip';
+import {LkuTable, LkuTableColumn} from './package/table';
+import LkuPagination from './package/pagination';
 
 const components = [LkuSelect, LkuOptionGroup, LkuOption, LkuMenu, LkuMenuGroup,
   LkuMenuItem, LkuCollapseTransition, LkuSwitch, LkuCheckbox, LkuCheckboxGroup,
   LkuRadio, LkuRadioGroup, LkuInput, LkuForm, LkuFormItem, LkuButton, LkuIcon,
-  LkuDrawer, LkuModal, LkuTooltip, LkuMessage, LkuNotice, LkuEllipsisTooltip];
+  LkuDrawer, LkuModal, LkuTooltip, LkuMessage, LkuNotice, LkuEllipsisTooltip,
+  LkuTable, LkuTableColumn, LkuPagination];
 
 const globalProperties = {$message: LkuMessage, $notice: LkuNotice};
 
@@ -68,5 +71,7 @@ export default {
   LkuTooltip,
   LkuMessage,
   LkuNotice,
-  LkuEllipsisTooltip
+  LkuEllipsisTooltip,
+  LkuTable, LkuTableColumn,
+  LkuPagination
 }

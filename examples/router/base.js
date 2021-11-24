@@ -66,6 +66,15 @@ export default [
           title: 'Tooltip提示',
         },
         component: () => import('../docs/zh_CN/tooltip.md')
+      },
+      {
+        path: '/component/table',
+        name: 'Table',
+        meta: {
+          type: 'component',
+          title: 'Table表格',
+        },
+        component: () => import('../docs/zh_CN/table.md')
       }
     ],
   },
