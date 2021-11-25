@@ -75,6 +75,15 @@ export default [
           title: 'Table表格',
         },
         component: () => import('../docs/zh_CN/table.md')
+      },
+      {
+        path: '/component/pagination',
+        name: 'Pagination',
+        meta: {
+          type: 'component',
+          title: 'Pagination分页',
+        },
+        component: () => import('../docs/zh_CN/pagination.md')
       }
     ],
   },

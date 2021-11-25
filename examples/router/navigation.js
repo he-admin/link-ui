@@ -46,6 +46,15 @@ export default [{
         title: 'Button按钮'
       },
       component: () => import('../docs/zh_CN/button.md')
+    },
+    {
+      path: '/component/dropdown',
+      name: 'DropDown',
+      meta: {
+        type: 'component',
+        title: 'Dropdown下拉菜单'
+      },
+      component: () => import('../docs/zh_CN/dropdown.md')
     }
   ]
 }]

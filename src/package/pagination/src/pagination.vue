@@ -1,5 +1,7 @@
 <template>
-
+  <div class="lku-pagination">
+    212212
+  </div>
 </template>
 
 <script>
