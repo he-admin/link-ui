@@ -12,7 +12,7 @@
                 :placement="placement"
                 @mouseenter.native="handleMouseover"
                 @mouseleave.native="handleMouseout"
-                v-show="visible">
+                v-if="visible">
         <slot name="menu"></slot>
       </lku-drop>
     </transition>
@@ -70,7 +70,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 
 /* dropdown */
 .lku-dropdown {
@@ -79,18 +79,18 @@ export default {
 
   .lku-dropdown__content {
     min-width: 100%;
+    padding: 10px 0;
     background: #fff;
     border-radius: 4px;
     box-shadow: @base-shadow-border-color;
-    margin: 10px 0;
-    z-index: 20191112;
+    z-index: 2021;
   }
 }
 
 .lku-dropdown-enter-from,
 .lku-dropdown-leave-to {
   opacity: 0;
-  transform: scaleY(.8);
+  transform: scaleY(.8) !important;
 }
 
 .lku-dropdown-enter-active,
@@ -102,23 +102,23 @@ export default {
 /* menu */
 
 /* menu-item */
-.lku-dropdown-item {
+.lku-dropdown__item {
   white-space: nowrap;
   padding: 10px 12px;
   cursor: pointer;
 
-  &:not(.lku-dropdown-item--disabled):hover {
+  &:not(.lku-dropdown__item--disabled):hover {
     color: @primary-color;
-    background: @base-hover-color;
+    background: @menu-hover-background-color;
   }
 }
 
-.lku-dropdown-item--active {
+.lku-dropdown__item--active {
   color: @primary-color;
   background: @base-hover-color;
 }
 
-.lku-dropdown-item--disabled {
+.lku-dropdown__item--disabled {
   color: @disabled-text-color;
   cursor: not-allowed;
 }

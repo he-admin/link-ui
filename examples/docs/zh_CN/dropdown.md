@@ -6,8 +6,10 @@
   <lku-dropdown>
    <lku-button>下拉菜单</lku-button>
    <template v-slot:menu>
-   <div>12314231</div>
-</template>
+     <lku-dropdown-item>12414</lku-dropdown-item>
+ <lku-dropdown-item>12414</lku-dropdown-item>
+ <lku-dropdown-item>12414</lku-dropdown-item>
+   </template>
  </lku-dropdown>
 </template>
 ```

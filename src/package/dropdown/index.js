@@ -1,6 +1,14 @@
-import LkuDropDown from './src/dropdown';
+import LkuDropdown from './src/dropdown';
+import LkuDropdownMenu from './src/dropdown-menu';
+import LkuDropdownItem from './src/dropdown-item';
 
-LkuDropDown.install = (Vue) => {
-  Vue.component(LkuDropDown.name, LkuDropDown)
-}
-export default LkuDropDown;
+[LkuDropdown, LkuDropdownMenu, LkuDropdownItem].forEach(component => {
+  component.install = (Vue) => {
+    Vue.component(component.name, component)
+  }
+})
+export {
+  LkuDropdown,
+  LkuDropdownMenu,
+  LkuDropdownItem
+};

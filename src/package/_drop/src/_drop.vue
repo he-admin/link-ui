@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import {computed, onMounted,nextTick, inject, getCurrentInstance} from 'vue';
+import {ref, computed, onMounted, nextTick, inject, getCurrentInstance} from 'vue';
 import {createPopper} from '@popperjs/core';
 
 export default {
@@ -17,26 +17,31 @@ export default {
     className: {
       type: String,
       default: ''
+    },
+    placement: {
+      type: String,
+      default: 'bottom'
+    },
+    offset: {
+      type: Array,
+      default: [0, 10]
     }
   },
   setup(props, {emit, slots}) {
 
     const instance = getCurrentInstance();
-    let reference = null;
-    const initPopper = ()=>{
-      createPopper(reference, instance.ctx.$el,
+    const initPopper = (reference, tooltip) => {
+      createPopper(reference, tooltip,
         {
-          placement: 'top',
-        });
+          placement: props.placement,
+          modifiers: [{name: 'computeStyles', options: {gpuAcceleration: false}},
+            {name: 'offset', options: {offset: props.offset}}]
+        },
+      );
     }
     onMounted(() => {
-      reference = inject('reference').value;
-      initPopper();
+      initPopper(inject('reference').value, instance.ctx.$el);
     })
-    nextTick(()=>{
-      reference && initPopper();
-    })
-
     return {emit}
   }
 }
