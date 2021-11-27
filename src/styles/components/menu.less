@@ -11,9 +11,18 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 4px 20px;
+      padding: 10px 20px;
       color: @primary-text-color;
-      font-size: @large-font-size;
+      font-size: @medium-x-font-size;
+      cursor: pointer;
+
+      .lku-icon__arrow {
+        transition: transform .2s ease-out;
+
+        &.lku-icon__arrow--up {
+          transform: rotate(180deg);
+        }
+      }
     }
   }
 
@@ -24,23 +33,29 @@
     padding: 10px 20px;
     transition: all .3s;
     cursor: pointer;
-    &:after{
+
+    &:after {
       content: '';
       position: absolute;
-      right: -2px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: transparent;
+      left: 0px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 3px solid transparent;
+      border-bottom: 3px solid transparent;
     }
-    &:hover{
+
+    &:hover {
       color: @primary-color;
     }
+
     &.lku-menu-item--active {
       color: @primary-color;
-      background: #f0fafe;
+      background: @menu-hover-background-color;
+      border-left: 3px solid @primary-color;
+
       &:after {
-        background: @primary-color;
+        //background: @primary-color;
+        border-left: 3px solid @primary-color;
       }
     }
   }
