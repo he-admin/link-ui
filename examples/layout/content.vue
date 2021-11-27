@@ -60,8 +60,7 @@ export default {
       font-weight: normal;
       font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     }
-
-    tr:hover {
+    tr:hover{
       background: #fafafa;
     }
 
@@ -102,8 +101,7 @@ export default {
 
   .docs-content {
     min-height: 100%;
-    width: calc(100% - 200px);
-    flex: 1;
+    width: 100%;
     background: #fafeff;
 
     .content-wrapper {

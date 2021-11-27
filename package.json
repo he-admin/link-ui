@@ -12,12 +12,10 @@
   "peerDependencies": {},
   "dependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",
-    "@popperjs/core": "^2.10.2",
     "async-validator": "^4.0.3",
     "core-js": "^3.6.5",
     "highlight.js": "^9.18.1",
     "popper.js": "^1.16.1",
-    "ulid": "^2.3.0",
     "vue": "^3.0.0",
     "vue-loader-v16": "^16.0.0-beta.5.4",
     "vue-router": "^4.0.0-0"

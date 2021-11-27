@@ -79,9 +79,6 @@ export default {
     //   clearTimeout(timeId);
     // }, 1000, true);
     const handleElMouseEnter = () => {
-      if(props.disabled){
-        return
-      }
       renderTooltip(el);
       isHover.value = true;
       clearTimeout(timeId);
