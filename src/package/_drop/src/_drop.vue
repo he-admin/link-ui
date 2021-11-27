@@ -8,11 +8,12 @@
 </template>
 
 <script>
-import {ref, computed, onMounted, nextTick, inject, getCurrentInstance} from 'vue';
+import {onMounted,onUpdated, inject, getCurrentInstance} from 'vue';
 import {createPopper} from '@popperjs/core';
 
 export default {
   name: "LkuDrop",
+  emits: ['mouseenter', 'mouseleave'], // 不加这行，若在组件外面直接使用事件，会被执行两次，vue3废除了.native修饰符。
   props: {
     className: {
       type: String,
@@ -27,9 +28,9 @@ export default {
       default: [0, 10]
     }
   },
-  setup(props, {emit, slots}) {
-
+  setup(props, {emit}) {
     const instance = getCurrentInstance();
+
     const initPopper = (reference, tooltip) => {
       createPopper(reference, tooltip,
         {
@@ -39,14 +40,15 @@ export default {
         },
       );
     }
+
     onMounted(() => {
+      initPopper(inject('reference').value, instance.ctx.$el);
+    })
+
+    onUpdated(()=>{
       initPopper(inject('reference').value, instance.ctx.$el);
     })
     return {emit}
   }
 }
 </script>
-
-<style scoped>
-
-</style>

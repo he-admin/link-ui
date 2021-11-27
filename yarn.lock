@@ -959,7 +959,7 @@
 
 "@popperjs/core@^2.10.2":
   version "2.10.2"
-  resolved "http://nexus.linklogis.cn/repository/lls-npm/@popperjs/core/-/core-2.10.2.tgz#0798c03351f0dea1a5a4cabddf26a55a7cbee590"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.10.2.tgz#0798c03351f0dea1a5a4cabddf26a55a7cbee590"
   integrity sha512-IXf3XA7+XyN7CP9gGh/XB0UxVMlvARGEgGXLubFICsUMGz6Q+DU+i4gGlpOxTjKvXjkJDJC8YdqdKkDj9qZHEQ==
 
 "@soda/friendly-errors-webpack-plugin@^1.7.1":
