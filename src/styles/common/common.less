@@ -41,16 +41,6 @@ ul[class^=lku], li[class^=lku] {
   text-overflow: ellipsis;
 }
 
-// 多行显示，超出隐藏
-.lku-global__multiple-ellipsis {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-wrap:break-word;
-}
-
 // 重写滚动条
 ::-webkit-scrollbar {
   width: 8px;
@@ -65,7 +55,7 @@ ul[class^=lku], li[class^=lku] {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: rgba(144, 147, 153, .3);;
+  background: rgba(144,147,153,.3);;
   border-radius: 8px;
 }
 
