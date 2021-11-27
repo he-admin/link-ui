@@ -1,12 +1,11 @@
 <template>
-  <transition
-    @before-enter="beforeEnter"
-    @enter="enter"
-    @after-enter="beforeEnter"
-    @before-leave="beforeLeave"
-    @leave="leave"
-    @after-leave="afterLeave"
-  >
+  <transition name="collapse-transition"
+              @before-enter="beforeEnter"
+              @enter="enter"
+              @after-enter="beforeEnter"
+              @before-leave="beforeLeave"
+              @leave="leave"
+              @after-leave="afterLeave">
     <slot></slot>
   </transition>
 </template>
@@ -30,10 +29,11 @@ export default {
     }
 
     const beforeLeave = (el) => {
+      el.style.transition = 'height .4s ease'
+      el.style.overflow = 'hidden'
       el.style.height = el.scrollHeight + 'px'
     }
     const leave = (el) => {
-      el.style.transition = 'height .4s ease'
       if (el.scrollHeight !== 0) {
         el.style.height = 0
       }
@@ -54,3 +54,11 @@ export default {
   },
 }
 </script>
+<style lang="less">
+//.collapse-transition-enter-from {
+//
+//}
+//.collapse-transition-enter-active,.collapse-transition-leave-active {
+//  transition: height .4s ease-in;
+//}
+</style>

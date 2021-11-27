@@ -1,7 +1,5 @@
 <template>
-  <i :class="['lku-icon',
-    `lku-icon-${type}`,
-    className]"
+  <i :class="['lku-icon', `lku-icon-${type}`, className]"
      :style="iconStyle"
      @click="handleClick">
   </i>
@@ -57,12 +55,12 @@ export default {
   }
 }
 
-//.lku-icon {
-//  display: inline-block;
-//  line-height: 1;
-//  text-align: center;
-//  vertical-align: center;
-//}
+.lku-icon {
+  display: inline-block;
+  line-height: 1;
+  text-align: center;
+  vertical-align: center;
+}
 
 .lku-icon-loading {
   animation: lkuIconRotate 2s linear infinite;
