@@ -4,7 +4,7 @@ module.exports = {
   pluginOptions: {
     "style-resources-loader": {
       preProcessor: "less",
-      patterns: ["./src/styles/colors/index.less", "./src/styles/sizes/index.less"] //引入全局less文件
+      patterns: ["./src/styles/colors/index.less", "./src/styles/sizes/index.less", "./src/styles/mixins/index.less"] //引入全局less文件
     }
   },
   publicPath: process.env.NODE_ENV === 'production'
