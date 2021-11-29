@@ -1,4 +1,5 @@
 <template>
+  {{ current }}
   <div :class="['lku-pagination',{
     'lku-pagination__simple': type === 'simple',
     'lku-pagination__conjoin': type === 'conjoin',
@@ -20,7 +21,7 @@
       <!--      页数-->
       <li v-for="(item,index) in pages"
           :key="index"
-          :class="['lku-pagination__item',{'lku-pagination__item--active': item === currentPage}]"
+          :class="['lku-pagination__item',{'lku-pagination__item--active': item === current}]"
           @click="handlePagerClick(item)">
         <template v-if="item==='preDots'|| item==='nextDots'">
           <lku-icon type="ellipsis"></lku-icon>
@@ -38,6 +39,22 @@
         </slot>
       </li>
     </ul>
+    <!--    每页显示条数配置-->
+    <div class="lku-pagination__size-option" v-if="showSizeOptions">
+      <lku-dropdown @visible-change="visibleChange">
+        <div class="lku-pagination__options-ref">
+          <span>{{ sizePerPage }}条/页</span>
+          <lku-icon :type="isPageSizeOpened?'arrow--up':'arrow-down'"></lku-icon>
+        </div>
+        <template v-slot:menu>
+          <lku-dropdown-item v-for="(item,index) in  pageSizeOptions"
+                             @click="handleItemClick(item)"
+                             :name="item">
+            {{ item }}条/页
+          </lku-dropdown-item>
+        </template>
+      </lku-dropdown>
+    </div>
   </div>
 </template>
 
@@ -85,13 +102,20 @@ export default {
       type: Boolean,
       default: true
     },
-    pageSizeOption: {
+    // 是否展示每页条数的配置项
+    showSizeOptions: {
+      type: Boolean,
+      default: true
+    },
+    pageSizeOptions: {
       type: Array,
-      default: [5, 10, 15, 20, 50, 100, 500]
+      default: [10, 15, 20, 50, 100, 500]
     }
   },
   setup(props, {emit}) {
-    const current = ref(1);
+    const current = ref(1);//  当前页
+    const sizePerPage = ref(10)//每页显示条数
+    const isPageSizeOpened = ref(false) // pageSizeOptions是否展开
     const totalPages = computed(() => {
       return Math.ceil(props.total / props.pageSize)
     })
@@ -173,7 +197,18 @@ export default {
         current.value = item
       }
     }
-    return {totalPages, pages, handlePreClick, handleNextClick, handlePagerClick}
+    const visibleChange = (visible) => {
+      isPageSizeOpened.value = visible;
+    }
+    const handleItemClick = (name) => {
+      sizePerPage.value = name;
+    }
+    return {
+      sizePerPage, totalPages, current, pages, isPageSizeOpened,
+      handlePreClick, handleNextClick, handlePagerClick,
+      visibleChange,
+      handleItemClick
+    }
   }
 }
 </script>
@@ -189,7 +224,66 @@ export default {
     vertical-align: middle;
 
     .lku-pagination__item {
-     .flex-content(inline-flex);
+      .flex-content(inline-flex);
+      position: relative;
+      margin-right: 8px;
+      min-width: @height-default-size;
+      height: @height-default-size;
+      padding: 0 4px;
+      border: 1px solid @base-border-color;
+      border-radius: 4px;
+      vertical-align: middle;
+      cursor: pointer;
+      user-select: none;
+      transition: all .3s;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      &:hover {
+        border: 1px solid @primary-color;
+        color: @primary-color;
+
+        .lku-icon-ellipsis {
+          opacity: 0;
+        }
+
+        .lku-pagination__arrow {
+          opacity: 1;
+        }
+
+        .lku-icon {
+          color: @primary-color;
+        }
+      }
+
+      .lku-pagination__arrow {
+        position: absolute;
+        opacity: 0;
+      }
+    }
+
+    .lku-pagination__item--active {
+      border: 1px solid @primary-color;
+      color: @primary-color;
+      box-shadow: 0 0 0 2px rgba(71, 142, 250, 0.2);
+    }
+  }
+
+  .lku-pagination__size-option {
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
+
+    .lku-pagination__options-ref {
+      height: @height-default-size;
+      line-height: @height-default-size - 2;
+      padding: 0 6px 0 14px;
+      border: 1px solid @base-border-color;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
     }
   }
 }
