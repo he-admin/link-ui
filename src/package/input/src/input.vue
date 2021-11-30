@@ -67,7 +67,7 @@ export default {
     type: {
       type: String,
       default: 'text',
-      validator: (val) => ['text', 'textarea', 'password'].includes(val)
+      validator: (val) => ['number', 'text', 'textarea', 'password'].includes(val)
     },
     rows: {
       type: Number,
@@ -82,7 +82,7 @@ export default {
       default: false
     },
     width: {
-      type: [Number,String],
+      type: [Number, String],
       default: 200
     },
     // input框内文字对齐
@@ -91,10 +91,10 @@ export default {
       default: 'left',
       validator: (val) => ['left', 'center', 'right'].includes(val)
     },
-    maxValue:{
+    maxValue: {
       type: Number
     },
-    minValue:{
+    minValue: {
       type: Number
     }
   },
@@ -118,12 +118,12 @@ export default {
       }
     })
     const handleInput = (event) => {
-      const value =  event?.target?.value;
+      const value = event?.target?.value;
       console.log(typeof value);
-      if(props.type==='number' && (props.minValue || props.maxValue)){
+      if (props.type === 'number' && (props.minValue || props.maxValue)) {
 
       }
-      currentValue.value =value;
+      currentValue.value = value;
       emit('update:modelValue', currentValue.value);
       emit('change', currentValue.value);
       dispatch('onFormItemChange', currentValue.value);

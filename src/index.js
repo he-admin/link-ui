@@ -1,13 +1,4 @@
-import './styles/components/menu.less';
-import './styles/components/select.less';
-import './styles/components/switch.less';
-import './styles/components/radio.less';
-import './styles/components/checkbox.less';
-import './styles/components/input.less';
-import './styles/components/form.less';
-import './styles/components/drawer.less';
-import './styles/components/modal.less';
-import './styles/components/tooltip.less';
+
 
 import {LkuSelect, LkuOptionGroup, LkuOption} from './package/select'
 import LkuMenu from './package/menu';

@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import {ref, computed} from 'vue';
+import {ref, watch, computed} from 'vue';
 
 export default {
   name: "LkuPagination",
@@ -126,6 +126,14 @@ export default {
     const current = ref(1);//  当前页
     const sizePerPage = ref(props.pageSize)//每页显示条数
     const isPageSizeOpened = ref(false) // pageSizeOptions是否展开
+    watch(() => {
+      return sizePerPage.value
+    }, (newVal, oldVal) => {
+      if(current.value ){
+
+      }
+    })
+
     const totalPages = computed(() => {
       return Math.ceil(props.total / sizePerPage.value)
     })
@@ -192,7 +200,7 @@ export default {
         return false;
       }
       updateSteps(-1);
-      emit('prev-click', current);
+      emit('page-change', {current: current.value, pageSize: sizePerPage.value});
     };
 
     // 下一页
@@ -202,7 +210,7 @@ export default {
         return false;
       }
       updateSteps(1);
-      emit('next-click', current);
+      emit('page-change', {current: current.value, pageSize: sizePerPage.value});
     };
     // 每一页的按钮点击
     const handlePagerClick = (item) => {
@@ -213,7 +221,7 @@ export default {
       } else {
         current.value = item
       }
-      emit('current-page', current);
+      emit('page-change', {current: current.value, pageSize: sizePerPage.value});
     }
     const visibleChange = (visible) => {
       isPageSizeOpened.value = visible;
@@ -221,7 +229,7 @@ export default {
     // 分页配置选项点击
     const handleSizeOptionClick = (name) => {
       sizePerPage.value = name;
-      emit('size-change', {pageSize: sizePerPage});
+      emit('page-change', {current: current.value, pageSize: sizePerPage.value});
     }
     return {
       sizePerPage, totalPages, current, pages, isPageSizeOpened,
