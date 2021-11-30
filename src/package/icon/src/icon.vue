@@ -65,4 +65,12 @@ export default {
 .lku-icon-loading {
   animation: lkuIconRotate 2s linear infinite;
 }
+ // 箭头动画，使用场景：菜单、select下拉框的收缩展开。
+.lku-icon__arrow {
+  transition: transform 0.2s ease-out;
+
+  &.lku-icon__arrow--up {
+    transform: rotate(180deg);
+  }
+}
 </style>

@@ -1,5 +1,4 @@
 <template>
-  {{ current }}
   <div :class="['lku-pagination',{
     'lku-pagination__simple': type === 'simple',
     'lku-pagination__conjoin': type === 'conjoin',
@@ -13,7 +12,8 @@
     <!--    pager主体-->
     <ul class="lku-pagination__pager">
       <!--      上一页-->
-      <li class="lku-pagination__item lku-pagination__pre-btn" @click="handlePreClick">
+      <li :class="['lku-pagination__item', 'lku-pagination__pre-btn',{'lku-pagination__disabled-btn': current=== 1 }]"
+          @click="handlePreClick">
         <slot name="prev">
           <lku-icon type="arrow-left"></lku-icon>
         </slot>
@@ -33,7 +33,9 @@
         </template>
       </li>
       <!--      下一页-->
-      <li class="lku-pagination__item lku-pagination__next-btn" @click="handleNextClick">
+      <li
+        :class="['lku-pagination__item', 'lku-pagination__next-btn',{'lku-pagination__disabled-btn': current=== totalPages }]"
+        @click="handleNextClick">
         <slot name="next">
           <lku-icon type="arrow-right"></lku-icon>
         </slot>
@@ -44,16 +46,24 @@
       <lku-dropdown @visible-change="visibleChange">
         <div class="lku-pagination__options-ref">
           <span>{{ sizePerPage }}条/页</span>
-          <lku-icon :type="isPageSizeOpened?'arrow--up':'arrow-down'"></lku-icon>
+          <lku-icon type="arrow-down"
+                    :class-name="['lku-icon__arrow',{'lku-icon__arrow--up':isPageSizeOpened}]"></lku-icon>
         </div>
         <template v-slot:menu>
           <lku-dropdown-item v-for="(item,index) in  pageSizeOptions"
-                             @click="handleItemClick(item)"
+                             @click="handleSizeOptionClick(item)"
                              :name="item">
             {{ item }}条/页
           </lku-dropdown-item>
         </template>
       </lku-dropdown>
+    </div>
+    <!--    快速跳转-->
+    <div class="lku-pagination__jumper" v-if="showJumper">
+      <span class="lku-pagination__tip">跳转至</span>
+      <lku-input type="number" v-model="current" width="60" text-align="center" class="lku-pagination__input">
+      </lku-input>
+      <span class="lku-pagination__tip">页</span>
     </div>
   </div>
 </template>
@@ -77,7 +87,7 @@ export default {
     // 总条数
     total: {
       type: Number,
-      default: 0,
+      default: 200,
       required: true
     },
     // 分页器展示类型
@@ -114,10 +124,10 @@ export default {
   },
   setup(props, {emit}) {
     const current = ref(1);//  当前页
-    const sizePerPage = ref(10)//每页显示条数
+    const sizePerPage = ref(props.pageSize)//每页显示条数
     const isPageSizeOpened = ref(false) // pageSizeOptions是否展开
     const totalPages = computed(() => {
-      return Math.ceil(props.total / props.pageSize)
+      return Math.ceil(props.total / sizePerPage.value)
     })
     /**
      * @description 计算分页数据
@@ -126,7 +136,7 @@ export default {
      * 9页及以上，根据current选中项，会展示前省略号、或后省略号、或前后省略号都展示
      */
     const pages = computed(() => {
-      const totalNums = 20 //totalPages.value;
+      const totalNums = totalPages.value;
       const count = 5; // 期望展示的页数，...前和...后之间的页数
       const level1 = count + 2;
       const level2 = count + 4;
@@ -175,19 +185,26 @@ export default {
       const cur = isAdd ? current.value + step : step;
       current.value = cur;
     }
+    // 上一页
     const handlePreClick = () => {
+      // 第一页点击无效
       if (current.value === 1) {
         return false;
       }
-      updateSteps(-1)
+      updateSteps(-1);
+      emit('prev-click', current);
     };
 
+    // 下一页
     const handleNextClick = () => {
-      if (current.value === totalPages) {
+      // 最后一页点击无效
+      if (current.value === totalPages.value) {
         return false;
       }
-      updateSteps(1)
+      updateSteps(1);
+      emit('next-click', current);
     };
+    // 每一页的按钮点击
     const handlePagerClick = (item) => {
       if (item === 'preDots') {
         updateSteps(-3)
@@ -196,24 +213,27 @@ export default {
       } else {
         current.value = item
       }
+      emit('current-page', current);
     }
     const visibleChange = (visible) => {
       isPageSizeOpened.value = visible;
     }
-    const handleItemClick = (name) => {
+    // 分页配置选项点击
+    const handleSizeOptionClick = (name) => {
       sizePerPage.value = name;
+      emit('size-change', {pageSize: sizePerPage});
     }
     return {
       sizePerPage, totalPages, current, pages, isPageSizeOpened,
       handlePreClick, handleNextClick, handlePagerClick,
       visibleChange,
-      handleItemClick
+      handleSizeOptionClick
     }
   }
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .lku-pagination {
   .lku-pagination__total {
     margin-right: 8px;
@@ -237,11 +257,15 @@ export default {
       user-select: none;
       transition: all .3s;
 
+      &.lku-pagination__disabled-btn {
+        cursor: not-allowed;
+      }
+
       &:last-child {
         margin-right: 0;
       }
 
-      &:hover {
+      &:not(.lku-pagination__disabled-btn):hover {
         border: 1px solid @primary-color;
         color: @primary-color;
 
@@ -277,6 +301,11 @@ export default {
     vertical-align: middle;
 
     .lku-pagination__options-ref {
+      span {
+        margin-right: 6px;
+      }
+
+      .flex-content();
       height: @height-default-size;
       line-height: @height-default-size - 2;
       padding: 0 6px 0 14px;
@@ -286,5 +315,106 @@ export default {
       user-select: none;
     }
   }
+
+  .lku-pagination__jumper {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    margin-left: 10px;
+
+    .lku-pagination__input {
+      padding-left: 8px;
+    }
+  }
+
+  /* 简约类型 */
+
+  &.lku-pagination__simple {
+
+    .lku-pagination__pager {
+      .lku-pagination__item {
+        border: 1px solid transparent;
+
+        &:hover {
+          border: 1px solid transparent;
+          color: @primary-color;
+        }
+      }
+
+      .lku-pagination__item--active {
+        border: 1px solid transparent;
+        box-shadow: none;
+      }
+    }
+  }
+
+  /* 连体类型 */
+
+  &.lku-pagination__conjoin {
+    .lku-pagination__item {
+      margin-right: 0;
+      margin-left: -1px;
+      border-radius: 0;
+
+      &:hover {
+        position: relative;
+        z-index: 1;
+      }
+    }
+
+    .lku-pagination__pre-btn {
+      border-radius: 4px 0 0 4px;
+    }
+
+    .mku-pagination__next-btn {
+      border-radius: 0 4px 4px 0;
+    }
+
+    .lku-pagination__item--active {
+      position: relative;
+      z-index: 1;
+    }
+  }
 }
+
+/* 大尺寸 */
+.lku-pagination__large {
+  .lku-pagination__item {
+    min-width: @height-large-size;
+    height: @height-large-size;
+    margin-right: 12px;
+  }
+
+  .lku-pagination__jumper {
+    height: @height-large-size;
+  }
+
+  .lku-pagination__size-option {
+    .lku-pagination__options-ref {
+      height: @height-large-size;
+      line-height: @height-large-size - 2;
+    }
+  }
+}
+
+/* 小尺寸 */
+.lku-pagination__small {
+  .lku-pagination__item {
+    min-width: @height-small-size;
+    height: @height-small-size;
+    margin-right: 6px;
+  }
+
+  .lku-pagination__jumper {
+    height: @height-small-size;
+  }
+
+  .lku-pagination__size-option {
+    .lku-pagination__options-ref {
+      height: @height-small-size;
+      line-height: @height-small-size - 2;
+    }
+  }
+}
+
 </style>
