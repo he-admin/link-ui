@@ -128,7 +128,7 @@ export default {
 
     provide('lkuSelected', selectedOptions);
     provide('modelValue', props.modelValue);
-    provide('lkuSelect', getCurrentInstance().ctx)
+    provide('lkuSelect', getCurrentInstance().proxy)
 
     /**
      * @method handleSelectClick

@@ -128,10 +128,10 @@ export default {
     const isPageSizeOpened = ref(false) // pageSizeOptions是否展开
     watch(() => {
       return sizePerPage.value
-    }, (newVal, oldVal) => {
-      if(current.value ){
-
-      }
+    }, () => {
+      // 每页显示条数发生变化时，需要重新计算总页数，
+      // 如果当前页数小于等于总页数，则当前页不变。如果当前页数大于总页数，则当前页数取最大值（总页数）
+      current.value = Math.min(current.value, totalPages.value); // a = a >=b ? b:a
     })
 
     const totalPages = computed(() => {

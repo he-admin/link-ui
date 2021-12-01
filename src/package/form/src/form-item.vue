@@ -36,7 +36,7 @@ export default {
   },
   setup(props) {
     const {on} = useEmit();
-    const lkuForm = inject('lkuForm').ctx;
+    const lkuForm = inject('lkuForm').proxy;
     let validateMessage = ref('');
     const formItemClasses = computed(() => {
       return [FORM_ITEM, {
@@ -69,7 +69,7 @@ export default {
       originFiledData = lkuForm.model[props.prop];
       // 子组件调用父亲的缓存方法
 
-      lkuForm.cacheFormItem(getCurrentInstance().ctx);
+      lkuForm.cacheFormItem(getCurrentInstance().proxy);
       isShowError = computed(() => {
         return validateMessage.value !== ''
       })

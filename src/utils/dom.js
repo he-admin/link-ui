@@ -120,3 +120,27 @@ export function off(target, event, fn) {
     target.removeEventListener(event, fn)
   }
 }
+
+/**
+ * @method getAttr
+ * @description 根据指定元素获取指定元素的属性的值
+ * @param { Node } el
+ * @param { String } prop
+ */
+export function getAttr(el, prop) {
+  return el && el.getAttribute(prop)
+}
+
+/**
+ * @method setAttrs
+ * @description 为指定元素设置属性
+ * @param { Node } el
+ * @param { Object } prop
+ */
+export function setAttrs(el, prop = {}) {
+  if (el) {
+    // Object.entries(prop).forEach(([key, value]) => {
+    //   console.log(key, value);
+    // });
+  }
+}

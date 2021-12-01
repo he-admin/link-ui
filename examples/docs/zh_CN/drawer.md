@@ -162,15 +162,13 @@ export default {
       点击打开抽屉
     </lku-button>
 
-    <lku-drawer v-model="visible">
+    <lku-drawer v-model:visible="visible">
       <div style="padding: 20px;">
         内容区域
       </div>
-      <div slot="title">
-        <lku-badge :value="8">
-          消息面板
-        </lku-badge>
-      </div>
+      <template v-slot:title>
+       自定义标题
+      </template>
     </lku-drawer>
   </div>
 </template>
@@ -196,7 +194,7 @@ export default {
       点击打开抽屉
     </lku-button>
 
-    <lku-drawer v-model="visible" :size="600" title="第1个抽屉">
+    <lku-drawer v-model:visible="visible" :size="600" title="第1个抽屉">
       <div style="padding: 20px;">
         <lku-button type="primary" @click="visible2 = true">
           再打开一个抽屉
@@ -204,7 +202,7 @@ export default {
       </div>
     </lku-drawer>
 
-    <lku-drawer v-model="visible2" title="第2个抽屉">
+    <lku-drawer v-model:visible="visible2" title="第2个抽屉">
       <div style="padding: 20px;">
         Hello Drawer!
       </div>
@@ -238,8 +236,7 @@ export default {
       可拖拽宽度的抽屉
     </lku-button>
 
-    <lku-drawer
-      v-model="visible"
+    <lku-drawer v-model:visible="visible"
       draggable
       title="可拖拽宽度的抽屉"
       :size.sync="size"

@@ -23,7 +23,7 @@ export default {
   },
   setup(props) {
     const {dispatch} = useEmit();
-    const {ctx} = getCurrentInstance();
+    const {proxy} = getCurrentInstance();
     const selectedOptions = inject('lkuSelected');
     const lkuSelect = inject('lkuSelect')
     let isActive = ref(false);
@@ -32,15 +32,15 @@ export default {
       if (props.disabled && event) {
         return event.stopPropagation(); // 阻止冒泡
       }
-      dispatch('lku-option-select', {value: props.value, name: props.label || ctx?.$el?.textContent})
+      dispatch('lku-option-select', {value: props.value, name: props.label || proxy?.$el?.textContent})
     }
 
     onMounted(() => {
       // 设置默认勾选
-      dispatch('selectDefault', {value: props.value, name: props.label || ctx?.$el?.textContent});
+      dispatch('selectDefault', {value: props.value, name: props.label || proxy?.$el?.textContent});
 
       // 调用父组件方法，将每个组件的option传给父组getCurrentInstance件
-      const {value, $el} = ctx;
+      const {value, $el} = proxy;
       lkuSelect.getAllOptions({value, name: $el?.textContent})
     })
 

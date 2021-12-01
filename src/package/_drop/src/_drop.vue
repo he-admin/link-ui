@@ -8,8 +8,9 @@
 </template>
 
 <script>
-import {onMounted,onUpdated, inject, getCurrentInstance} from 'vue';
+import {onMounted, onUpdated, inject, getCurrentInstance} from 'vue';
 import {createPopper} from '@popperjs/core';
+import {getAttr} from '@/utils/dom';
 
 export default {
   name: "LkuDrop",
@@ -29,10 +30,12 @@ export default {
     }
   },
   setup(props, {emit}) {
-    const instance = getCurrentInstance();
+    const {proxy} = getCurrentInstance();
+    let popper = null;
+    let el = null;
 
     const initPopper = (reference, tooltip) => {
-      createPopper(reference, tooltip,
+      popper = createPopper(reference, tooltip,
         {
           placement: props.placement,
           modifiers: [{name: 'computeStyles', options: {gpuAcceleration: false}},
@@ -42,11 +45,15 @@ export default {
     }
 
     onMounted(() => {
-      initPopper(inject('reference').value, instance.ctx.$el);
+      el = proxy.$el;
+      initPopper(inject('reference').value, el);
     })
 
-    onUpdated(()=>{
-      initPopper(inject('reference').value, instance.ctx.$el);
+    onUpdated(() => {
+      // 当弹出层位置随滑动时发生变化，对应的弹出层动画也要做相应调整。
+      const placement = getAttr(el, 'data-popper-placement');
+      el.style.transformOrigin = placement.indexOf('top') > -1 ? 'left bottom' : 'left top';
+      popper.update()
     })
     return {emit}
   }
