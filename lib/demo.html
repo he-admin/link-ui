@@ -1,10 +1,32 @@
-<meta charset="utf-8">
-<title>LinkUI demo</title>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="./LinkUI.css">
+</head>
+<body>
+<div id="app">
+    <!--  <lku-button>测试</lku-button>-->
+    <lku-drawer title="你好" v-model:visible="visible">
+
+    </lku-drawer>
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="//unpkg.com/vue@next"></script>
+<!-- import JavaScript -->
 <script src="./LinkUI.umd.js"></script>
-
-<link rel="stylesheet" href="./LinkUI.css">
-
-
 <script>
-console.log(LinkUI)
+  console.log(window);
+  const {ref} = Vue;
+  const app = Vue.createApp({
+    setup(){
+       const visible = ref(true);
+      return {visible}
+    }
+  });
+  app.use(LinkUI);
+  app.mount("#app");
 </script>
+</html>

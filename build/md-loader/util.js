@@ -70,7 +70,7 @@ function genInlineComponentText(template, script,style) {
       mounted(){
         this.$nextTick(()=>{
           const blocks = document.querySelectorAll('pre code:not(.hljs)')
-          Array.prototype.forEach.call(blocks, hljs.highlightBlock)
+          Array.prototype.forEach.call(blocks, highlightBlock)
         })
       },
       render,

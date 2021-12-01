@@ -38,7 +38,7 @@ const install = (Vue) => {
 }
 
 // if (typeof window !== 'undefined' && window.Vue) {
-//   install(window.Vue.createApp({})); // 判断如果引入了Vue，则注册组件
+//   install(window.Vue); // 判断如果引入了Vue，则注册组件
 // }
 
 export default {

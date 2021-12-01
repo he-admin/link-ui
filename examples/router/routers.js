@@ -1,7 +1,7 @@
 import routes from './index'
 import {createRouter, createWebHashHistory} from 'vue-router';
 import {nextTick} from 'vue'
-import hljs from 'highlight.js';
+//import {highlightBlock} from 'highlight.js';
 
 // Vue3路由使用方法
 const router = createRouter({
@@ -9,6 +9,6 @@ const router = createRouter({
   routes
 })
 router.afterEach(() => {
-  nextTick(() => Array.from(document.querySelectorAll('pre code')).forEach(hljs.highlightBlock));
+  //nextTick(() => Array.from(document.querySelectorAll('pre code')).forEach(highlightBlock));
 })
 export default router;

@@ -51,8 +51,8 @@ function mdLoader (source) {
   let pageScript = ''
   if (componenetsString) {
     pageScript = `<script>
-      import hljs from 'highlight.js'
-      import * as Vue from "vue"
+       import {highlightBlock} from 'highlight.js'
+       import * as Vue from "vue"
       export default {
         name: 'component-doc',
         components: {
