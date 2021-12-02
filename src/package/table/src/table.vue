@@ -1,6 +1,8 @@
 <template>
   <div class="lku-table">
+    <div class="lls-table__content">
 
+    </div>
   </div>
 </template>
 

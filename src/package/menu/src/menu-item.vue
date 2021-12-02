@@ -37,14 +37,10 @@ export default {
     const {dispatch} = useEmit();
     const menu = inject('menu');
     const defaultActive = inject('defaultActive');
-    console.log('defaultActive',menu,1213);
     const handleClick = () => {
       emit('click', props); // 向父组件(一层)传递事件
       dispatch('menu-item-click', props) // 向父级及以上的组件传递事件（多层）
     }
-    watch(() => menu, (newVal) => {
-      console.log(newVal);
-    })
 
     const menuItemClasses = computed(() => {
       return [PREFIX_MENU_ITEM, {
