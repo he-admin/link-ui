@@ -12,7 +12,7 @@ const stylesEntry = path.join(__dirname, '../../src/styles');
 // generate base.css file for babel-plugin-component
 function genBaseCss(next) {
   const baseCssPath = path.join(stylesEntry, 'base.less');
-  gulp.src(baseCssPath)
+  gulp.src(baseCssPath,{allowEmpty: true})
     .pipe(less())
     .pipe(autoprefixer())
     .pipe(cleanCSS())
@@ -25,7 +25,7 @@ function genBaseCss(next) {
 function genSeperateCss(next) {
   // 读取所有组件的css路径
   const entryFiles = glob.sync(path.join(stylesEntry, 'components/*.less'));
-
+  console.log(entryFiles);
   entryFiles.forEach((filePath) => {
     const match = filePath.match(/src\/styles\/components\/(.+)\.less/);
     const name = match && match[1];

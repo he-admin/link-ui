@@ -1,5 +1,4 @@
-
-
+import './styles/index.less';
 import {LkuSelect, LkuOptionGroup, LkuOption} from './package/select'
 import LkuMenu from './package/menu';
 import LkuMenuGroup from './package/menu-group';

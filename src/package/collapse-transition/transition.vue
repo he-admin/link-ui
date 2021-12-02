@@ -54,11 +54,3 @@ export default {
   },
 }
 </script>
-<style lang="less">
-//.collapse-transition-enter-from {
-//
-//}
-//.collapse-transition-enter-active,.collapse-transition-leave-active {
-//  transition: height .4s ease-in;
-//}
-</style>

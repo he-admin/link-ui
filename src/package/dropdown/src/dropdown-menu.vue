@@ -9,7 +9,3 @@ export default {
   name: "LkuDropdownMenu"
 }
 </script>
-
-<style scoped>
-
-</style>

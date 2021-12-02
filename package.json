@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --report",
+    "build:docs": "vue-cli-service build --report",
     "build:style": "gulp --gulpfile ./build/bin/generate-css.js",
     "build-lib": "vue-cli-service build --target lib --name LinkUI --dest lib src/index.js",
     "lint": "vue-cli-service lint"
