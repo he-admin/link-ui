@@ -34,7 +34,7 @@ export default {
     const ellipsis = ref(null);
     const disabled = ref(false);
     let content = '';
-    content = slots?.default()[0]?.children ?? ''
+    content = slots?.default()?.[0]?.children ?? ''
 
     const ellipsisStyle = computed(() => {
       const style = {width: props.width || 'fit-content', maxWidth: '100%'};

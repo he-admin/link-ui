@@ -5,12 +5,12 @@
         <table :class="{'lku-table__border': border}" cellspacing="0" cellpadding="0">
           <thead>
           <tr>
-           <slot></slot>
+            <slot colType="thead"></slot>
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <slot></slot>
+          <tr v-for="(item,index) in data">
+             <slot colType="tbody"></slot>
           </tr>
           </tbody>
         </table>
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import {provide, computed} from 'vue';
+
 export default {
   name: "LkuTable",
   props: {
@@ -33,11 +35,14 @@ export default {
       type: Boolean,
       default: true
     }
+  },
+  setup(props) {
+    provide('data', props.data)
   }
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .lku-table {
   table {
     table-layout: auto; // 默认为fixed
