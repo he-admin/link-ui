@@ -20,12 +20,14 @@ import LkuEllipsisTooltip from './package/ellipsis-tooltip';
 import {LkuTable, LkuTableColumn} from './package/table';
 import LkuPagination from './package/pagination';
 import {LkuDropdown, LkuDropdownMenu, LkuDropdownItem} from './package/dropdown';
+import LkuTree from './package/tree';
 
 const components = [LkuSelect, LkuOptionGroup, LkuOption, LkuMenu, LkuMenuGroup,
   LkuMenuItem, LkuCollapseTransition, LkuSwitch, LkuCheckbox, LkuCheckboxGroup,
   LkuRadio, LkuRadioGroup, LkuInput, LkuForm, LkuFormItem, LkuButton, LkuIcon,
   LkuDrawer, LkuModal, LkuTooltip, LkuMessage, LkuNotice, LkuEllipsisTooltip,
-  LkuTable, LkuTableColumn, LkuPagination, LkuDropdown, LkuDropdownMenu, LkuDropdownItem];
+  LkuTable, LkuTableColumn, LkuPagination, LkuDropdown, LkuDropdownMenu, LkuDropdownItem,
+  LkuTree];
 
 const globalProperties = {$message: LkuMessage, $notice: LkuNotice};
 
@@ -65,5 +67,6 @@ export default {
   LkuEllipsisTooltip,
   LkuTable, LkuTableColumn,
   LkuPagination,
-  LkuDropdown, LkuDropdownMenu, LkuDropdownItem
+  LkuDropdown, LkuDropdownMenu, LkuDropdownItem,
+  LkuTree
 }

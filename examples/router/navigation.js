@@ -55,6 +55,15 @@ export default [{
         title: 'Dropdown下拉菜单'
       },
       component: () => import('../docs/zh_CN/dropdown.md')
+    },
+    {
+      path: '/component/tree',
+      name: 'Tree',
+      meta: {
+        type: 'component',
+        title: 'Tree树组件'
+      },
+      component: () => import('../docs/zh_CN/tree.md')
     }
   ]
 }]
